@@ -4,6 +4,7 @@ import com.induce.authservice.dto.LoginRequest
 import com.induce.authservice.dto.RegisterRequest
 import com.induce.authservice.exception.InvalidCredentialsException
 import com.induce.authservice.exception.UserAlreadyExistsException
+import com.induce.authservice.exception.UserNotFoundException
 import com.induce.authservice.model.Role
 import com.induce.authservice.model.User
 import com.induce.authservice.repository.UserRepository
@@ -35,7 +36,7 @@ class AuthService(
 
     fun login(request: LoginRequest): String {
         val user = userRepository.findByEmail(request.email)
-            ?: throw InvalidCredentialsException()
+            ?: throw UserNotFoundException(request.email)
 
         if (!passwordEncoder.matches(request.password, user.passwordHash)) {
             throw InvalidCredentialsException()
