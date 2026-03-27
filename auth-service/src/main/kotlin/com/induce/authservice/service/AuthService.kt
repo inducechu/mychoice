@@ -1,0 +1,47 @@
+package com.induce.authservice.service
+
+import com.induce.authservice.dto.LoginRequest
+import com.induce.authservice.dto.RegisterRequest
+import com.induce.authservice.exception.InvalidCredentialsException
+import com.induce.authservice.exception.UserAlreadyExistsException
+import com.induce.authservice.model.Role
+import com.induce.authservice.model.User
+import com.induce.authservice.repository.UserRepository
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.stereotype.Service
+
+@Service
+class AuthService(
+    private val userRepository: UserRepository,
+    private val passwordEncoder: BCryptPasswordEncoder,
+    private val jwtService: JwtService,
+) {
+
+    fun register(request: RegisterRequest): User {
+        if (userRepository.findByEmail(request.email) != null) {
+            throw UserAlreadyExistsException(request.email)
+        }
+
+        val hash = passwordEncoder.encode(request.password)!!
+
+        val newUser = User(
+            email = request.email,
+            passwordHash = hash,
+            role = request.role ?: Role.ABITURIENT,
+        )
+
+        return userRepository.save(newUser)
+    }
+
+    fun login(request: LoginRequest): String {
+        val user = userRepository.findByEmail(request.email)
+            ?: throw InvalidCredentialsException()
+
+        if (!passwordEncoder.matches(request.password, user.passwordHash)) {
+            throw InvalidCredentialsException()
+        }
+
+        return jwtService.generateToken(user.email, user.role.name)
+    }
+
+}

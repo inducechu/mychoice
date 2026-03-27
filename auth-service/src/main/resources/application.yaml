@@ -1,3 +1,25 @@
+server:
+  port: 8081
+
 spring:
   application:
     name: auth-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/mychoice_auth
+    username: postgres
+    password: 1234
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+jwt:
+  secret: 9a4f4c35456584c35063138072105151241121112413151235346314151617181920
+  expiration: 86400000
