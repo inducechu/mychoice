@@ -1,0 +1,5 @@
+app:
+  gateway:
+    open-endpoints:
+      - "/api/auth/login"
+      - "/api/auth/register"

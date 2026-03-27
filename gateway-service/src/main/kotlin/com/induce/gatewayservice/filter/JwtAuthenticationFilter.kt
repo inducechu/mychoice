@@ -1,0 +1,65 @@
+package com.induce.gatewayservice.filter
+
+import com.induce.gatewayservice.service.JwtService
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.cloud.gateway.filter.GatewayFilterChain
+import org.springframework.cloud.gateway.filter.GlobalFilter
+import org.springframework.core.Ordered
+import org.springframework.http.HttpStatus
+import org.springframework.stereotype.Component
+import org.springframework.web.server.ServerWebExchange
+import reactor.core.publisher.Mono
+
+@Component
+class JwtAuthenticationFilter(
+    private val jwtService: JwtService,
+//    @Value("\${app.gateway.open-endpoints:}") private val openEndpoints: List<String>,
+) : GlobalFilter, Ordered {
+    private val openEndpoints: List<String> = listOf("/api/auth/login", "/api/auth/register")
+
+    override fun filter(exchange: ServerWebExchange, chain: GatewayFilterChain): Mono<Void> {
+        val path = exchange.request.path.value()
+
+        if (openEndpoints.any { path.contains(it) }) {
+            return chain.filter(exchange)
+        }
+
+        val authHeader = exchange.request.headers.getFirst("Authorization")
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return onError(exchange, HttpStatus.UNAUTHORIZED)
+        }
+
+        val token = authHeader.substring(7)
+
+        if (!jwtService.validateToken(token)) {
+            return onError(exchange, HttpStatus.UNAUTHORIZED)
+        }
+
+        val email = jwtService.extractUsername(token)
+        val role = jwtService.extractRole(token)
+
+        return if (email != null && role != null) {
+            val modifiedRequest = exchange
+                .request
+                .mutate()
+                .header("X-Auth-User-Email", email)
+                .header("X-Auth-User-Role", role)
+                .build()
+
+            chain.filter(
+                exchange
+                    .mutate()
+                    .request(modifiedRequest)
+                    .build()
+            )
+        } else onError(exchange, HttpStatus.UNAUTHORIZED)
+    }
+
+    private fun onError(exchange: ServerWebExchange, httpStatus: HttpStatus): Mono<Void> {
+        exchange.response.statusCode = httpStatus
+        return exchange.response.setComplete()
+    }
+
+    override fun getOrder(): Int = -2
+}
