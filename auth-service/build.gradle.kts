@@ -26,7 +26,7 @@ dependencies {
     implementation(libs.jackson.module.kotlin)
     implementation(libs.springdoc.openapi.webmvc)
 
-    // JWT (те же самые версии из одного места!)
+    // JWT
     implementation(libs.jjwt.api)
     runtimeOnly(libs.jjwt.impl)
     runtimeOnly(libs.jjwt.jackson)
