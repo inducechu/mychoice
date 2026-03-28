@@ -1,7 +1,7 @@
 package com.induce.gatewayservice.filter
 
+import com.induce.gatewayservice.config.SecurityConfigProps
 import com.induce.gatewayservice.service.JwtService
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.cloud.gateway.filter.GatewayFilterChain
 import org.springframework.cloud.gateway.filter.GlobalFilter
 import org.springframework.core.Ordered
@@ -13,21 +13,22 @@ import reactor.core.publisher.Mono
 @Component
 class JwtAuthenticationFilter(
     private val jwtService: JwtService,
-//    @Value("\${app.gateway.open-endpoints:}") private val openEndpoints: List<String>,
+    private val props: SecurityConfigProps,
 ) : GlobalFilter, Ordered {
-    private val openEndpoints: List<String> = listOf(
-        "/api/auth/login",
-        "/api/auth/register",
-        "/api/auth/v3/api-docs",
-        "/v3/api-docs/**",
-        "/swagger-ui/**",
-        "/webjars"
-    )
+    private val log = org.slf4j.LoggerFactory.getLogger(JwtAuthenticationFilter::class.java)
+    private val pathMatcher = org.springframework.util.AntPathMatcher()
+
+    init {
+        log.info("JWT Filter: Загружены эндпоинты: {}", props.openEndpoints)
+    }
 
     override fun filter(exchange: ServerWebExchange, chain: GatewayFilterChain): Mono<Void> {
         val path = exchange.request.path.value()
 
-        if (openEndpoints.any { path.contains(it) }) {
+        val isOpen = props.openEndpoints.any { pattern -> pathMatcher.match(pattern, path) }
+
+        if (isOpen) {
+            log.debug("Доступ разрешен (open endpoint): {}", path)
             return chain.filter(exchange)
         }
 

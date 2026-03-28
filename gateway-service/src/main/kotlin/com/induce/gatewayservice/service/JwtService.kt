@@ -8,7 +8,7 @@ import javax.crypto.SecretKey
 
 @Service
 class JwtService(
-    @Value("\${jwt.secret}") private val secret: String,
+    @param:Value("\${jwt.secret}") private val secret: String,
 ) {
     private val key by lazy { Keys.hmacShaKeyFor(secret.toByteArray()) }
 
