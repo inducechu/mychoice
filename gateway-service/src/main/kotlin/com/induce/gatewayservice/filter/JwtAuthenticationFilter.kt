@@ -15,7 +15,14 @@ class JwtAuthenticationFilter(
     private val jwtService: JwtService,
 //    @Value("\${app.gateway.open-endpoints:}") private val openEndpoints: List<String>,
 ) : GlobalFilter, Ordered {
-    private val openEndpoints: List<String> = listOf("/api/auth/login", "/api/auth/register")
+    private val openEndpoints: List<String> = listOf(
+        "/api/auth/login",
+        "/api/auth/register",
+        "/api/auth/v3/api-docs",
+        "/v3/api-docs/**",
+        "/swagger-ui/**",
+        "/webjars"
+    )
 
     override fun filter(exchange: ServerWebExchange, chain: GatewayFilterChain): Mono<Void> {
         val path = exchange.request.path.value()

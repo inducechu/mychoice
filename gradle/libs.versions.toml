@@ -7,7 +7,7 @@ springDependencyManagement = "1.1.7"
 
 # Библиотеки
 jjwt = "0.12.6"
-springdoc = "2.8.4"
+springdoc = "3.0.2"
 
 [libraries]
 # Spring Cloud BOM (для управления версиями облачных компонентов)
