@@ -1,6 +1,6 @@
 spring:
   cloud:
-    gateway:
+    gateway.server.webflux:
       routes:
         - id: auth-service
           uri: http://localhost:8081
