@@ -4,7 +4,7 @@ spring:
       globalcors:
         cors-configurations:
           '[/**]': # Применять ко всем путям
-            allowedOrigins: "http://localhost:3000" # Разрешить фронтенд
+            allowedOrigins: "http://localhost:5173" # Разрешить фронтенд
             allowedMethods:
               - GET
               - POST
