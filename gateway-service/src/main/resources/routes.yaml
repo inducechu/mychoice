@@ -1,6 +1,18 @@
 spring:
   cloud:
     gateway.server.webflux:
+      globalcors:
+        cors-configurations:
+          '[/**]': # Применять ко всем путям
+            allowedOrigins: "http://localhost:3000" # Разрешить фронтенд
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*" # Разрешить любые заголовки (включая твой Authorization)
+            allowCredentials: true # Разрешить передачу кук и Auth-заголовков
       routes:
         - id: auth-service
           uri: http://localhost:8081
