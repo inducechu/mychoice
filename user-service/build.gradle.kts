@@ -1,12 +1,9 @@
-import com.google.protobuf.gradle.id
-
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.spring)
     alias(libs.plugins.kotlin.jpa)
     alias(libs.plugins.spring.boot)
     alias(libs.plugins.spring.dependency.management)
-    alias(libs.plugins.protobuf)
 }
 
 group = "com.induce"
@@ -19,6 +16,8 @@ java {
 }
 
 dependencies {
+    //implementation(project(":common-proto"))
+
     implementation(libs.spring.boot.starter.data.jpa)
     implementation(libs.spring.boot.starter.validation)
     implementation(libs.spring.boot.starter.webmvc)
@@ -42,26 +41,6 @@ dependencyManagement {
     imports {
         mavenBom(libs.spring.grpc.dependencies.get().toString())
         mavenBom(libs.spring.cloud.dependencies.get().toString())
-    }
-}
-
-protobuf {
-    protoc {
-        artifact = "com.google.protobuf:protoc"
-    }
-    plugins {
-        id("grpc") {
-            artifact = "io.grpc:protoc-gen-grpc-java"
-        }
-    }
-    generateProtoTasks {
-        all().forEach {
-            it.plugins {
-                id("grpc") {
-                    option("@generated=omit")
-                }
-            }
-        }
     }
 }
 
