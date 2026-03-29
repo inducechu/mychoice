@@ -3,6 +3,9 @@ server:
 spring:
   application:
     name: auth-service
+  config:
+    import:
+      - "optional:classpath:eureka-client.yaml"
   datasource:
     url: jdbc:postgresql://localhost:5432/mychoice_auth
     username: postgres

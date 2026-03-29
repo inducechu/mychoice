@@ -13,8 +13,11 @@ spring:
               - OPTIONS
             allowedHeaders: "*" # Разрешить любые заголовки (включая твой Authorization)
             allowCredentials: true # Разрешить передачу кук и Auth-заголовков
+      discovery:
+        locator:
+          enabled: true # Позволяет шлюзу создавать маршруты на основе имен в Eureka
       routes:
         - id: auth-service
-          uri: http://localhost:8081
+          uri: lb://auth-service
           predicates:
             - Path=/api/auth/**

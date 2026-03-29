@@ -31,6 +31,10 @@ dependencies {
     runtimeOnly(libs.jjwt.impl)
     runtimeOnly(libs.jjwt.jackson)
 
+    // Eureka client
+    implementation(libs.spring.cloud.starter.netflix.eureka.client)
+
+
     // Тесты
     testImplementation(libs.spring.boot.starter.test)
     testImplementation(libs.reactor.test)

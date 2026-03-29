@@ -31,11 +31,20 @@ dependencies {
     runtimeOnly(libs.jjwt.impl)
     runtimeOnly(libs.jjwt.jackson)
 
+    // Eureka client
+    implementation(libs.spring.cloud.starter.netflix.eureka.client)
+
     runtimeOnly(libs.postgresql)
 
     // Тесты
     testImplementation(libs.spring.boot.starter.test)
     testImplementation(libs.kotlin.test.junit5)
+}
+
+dependencyManagement {
+    imports {
+        mavenBom(libs.spring.cloud.dependencies.get().toString())
+    }
 }
 
 kotlin {
