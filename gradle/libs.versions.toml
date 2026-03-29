@@ -5,6 +5,8 @@ springBoot = "4.0.4"
 springCloud = "2025.1.1"
 springDependencyManagement = "1.1.7"
 openApiGenerator="7.21.0"
+springGrpc = "1.0.2"
+protobufPlugin = "0.9.5"
 
 # Библиотеки
 jjwt = "0.12.6"
@@ -21,6 +23,8 @@ spring-boot-starter-security = { group = "org.springframework.boot", name = "spr
 spring-boot-starter-validation = { group = "org.springframework.boot", name = "spring-boot-starter-validation" }
 spring-boot-starter-data-jpa = { group = "org.springframework.boot", name = "spring-boot-starter-data-jpa" }
 spring-boot-starter-actuator = { group = "org.springframework.boot", name = "spring-boot-starter-actuator" }
+spring-grpc-server-starter = { group = "org.springframework.grpc", name = "spring-grpc-server-web-spring-boot-starter" }
+
 
 # Gateway
 spring-cloud-starter-gateway-server-webflux = { group = "org.springframework.cloud", name = "spring-cloud-starter-gateway-server-webflux" }
@@ -34,6 +38,11 @@ jackson-module-kotlin = { group = "com.fasterxml.jackson.module", name = "jackso
 jjwt-api = { group = "io.jsonwebtoken", name = "jjwt-api", version.ref = "jjwt" }
 jjwt-impl = { group = "io.jsonwebtoken", name = "jjwt-impl", version.ref = "jjwt" }
 jjwt-jackson = { group = "io.jsonwebtoken", name = "jjwt-jackson", version.ref = "jjwt" }
+
+# gRPC & Proto
+spring-grpc-dependencies = { group = "org.springframework.grpc", name = "spring-grpc-dependencies", version.ref = "springGrpc" }
+grpc-services = { group = "io.grpc", name = "grpc-services" }
+spring-grpc-test = { group = "org.springframework.grpc", name = "spring-grpc-test" }
 
 # Database
 postgresql = { group = "org.postgresql", name = "postgresql"}
@@ -58,3 +67,4 @@ kotlin-jpa = { id = "org.jetbrains.kotlin.plugin.jpa", version.ref = "kotlin" }
 spring-boot = { id = "org.springframework.boot", version.ref = "springBoot" }
 spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "springDependencyManagement" }
 openapi-generator = { id = "org.openapi.generator", version.ref = "openApiGenerator"}
+protobuf = { id = "com.google.protobuf", version.ref = "protobufPlugin" }

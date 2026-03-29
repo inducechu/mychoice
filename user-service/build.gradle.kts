@@ -1,0 +1,82 @@
+import com.google.protobuf.gradle.id
+
+plugins {
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlin.spring)
+    alias(libs.plugins.kotlin.jpa)
+    alias(libs.plugins.spring.boot)
+    alias(libs.plugins.spring.dependency.management)
+    alias(libs.plugins.protobuf)
+}
+
+group = "com.induce"
+version = "0.0.1-SNAPSHOT"
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+dependencies {
+    implementation(libs.spring.boot.starter.data.jpa)
+    implementation(libs.spring.boot.starter.validation)
+    implementation(libs.spring.boot.starter.webmvc)
+    implementation(libs.grpc.services)
+    implementation(libs.kotlin.reflect)
+    implementation(libs.spring.cloud.starter.netflix.eureka.client)
+    implementation(libs.spring.grpc.server.starter)
+    implementation(libs.jackson.module.kotlin)
+
+    runtimeOnly(libs.postgresql)
+
+    testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-validation-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
+    testImplementation(libs.kotlin.test.junit5)
+    testImplementation(libs.spring.grpc.test)
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+}
+
+dependencyManagement {
+    imports {
+        mavenBom(libs.spring.grpc.dependencies.get().toString())
+        mavenBom(libs.spring.cloud.dependencies.get().toString())
+    }
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc"
+    }
+    plugins {
+        id("grpc") {
+            artifact = "io.grpc:protoc-gen-grpc-java"
+        }
+    }
+    generateProtoTasks {
+        all().forEach {
+            it.plugins {
+                id("grpc") {
+                    option("@generated=omit")
+                }
+            }
+        }
+    }
+}
+
+kotlin {
+    compilerOptions {
+        freeCompilerArgs.addAll("-Xjsr305=strict", "-Xannotation-default-target=param-property")
+    }
+}
+
+allOpen {
+    annotation("jakarta.persistence.Entity")
+    annotation("jakarta.persistence.MappedSuperclass")
+    annotation("jakarta.persistence.Embeddable")
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
+}
