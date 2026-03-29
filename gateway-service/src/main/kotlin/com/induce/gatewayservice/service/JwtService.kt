@@ -1,51 +1,39 @@
 package com.induce.gatewayservice.service
 
+import io.jsonwebtoken.Claims
+import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
+import io.jsonwebtoken.security.SignatureException
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
-import javax.crypto.SecretKey
 
 @Service
 class JwtService(
     @param:Value("\${jwt.secret}") private val secret: String,
 ) {
+    private val log = org.slf4j.LoggerFactory.getLogger(JwtService::class.java)
     private val key by lazy { Keys.hmacShaKeyFor(secret.toByteArray()) }
 
-    fun validateToken(token: String): Boolean {
-        return try {
-            Jwts.parser()
-                .verifyWith(key)
-                .build()
-                .parseSignedClaims(token)
-            true
-        } catch (e: Exception) {
-            false
-        }
-    }
-
-    fun extractUsername(token: String): String? {
+    fun getClaims(token: String): Claims? {
         return try {
             Jwts.parser()
                 .verifyWith(key)
                 .build()
                 .parseSignedClaims(token)
                 .payload
-                .subject
+        } catch (e: ExpiredJwtException) {
+            log.error("JWT Token истек: {}", e.message)
+            null
+        } catch (e: SignatureException) {
+            log.error("Неверная подпись JWT: {}", e.message)
+            null
         } catch (e: Exception) {
+            log.error("Ошибка валидации токена: {}", e.message)
             null
         }
     }
 
-    fun extractRole(token: String): String? {
-        return try {
-            Jwts.parser()
-                .verifyWith(key)
-                .build()
-                .parseSignedClaims(token)
-                .payload["role"] as? String
-        } catch (e: Exception) {
-            null
-        }
-    }
+    fun extractUserId(claims: Claims): String? = claims.subject
+    fun extractRole(claims: Claims): String? = claims["role"] as? String
 }

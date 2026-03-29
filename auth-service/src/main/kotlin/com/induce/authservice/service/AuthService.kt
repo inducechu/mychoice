@@ -42,7 +42,7 @@ class AuthService(
             throw InvalidCredentialsException()
         }
 
-        return jwtService.generateToken(user.email, user.role.name)
+        return jwtService.generateToken(user)
     }
 
 }

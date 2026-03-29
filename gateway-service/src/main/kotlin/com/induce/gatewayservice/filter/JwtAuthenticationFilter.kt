@@ -40,28 +40,23 @@ class JwtAuthenticationFilter(
 
         val token = authHeader.substring(7)
 
-        if (!jwtService.validateToken(token)) {
-            return onError(exchange, HttpStatus.UNAUTHORIZED)
-        }
+        val claims = jwtService.getClaims(token)
 
-        val email = jwtService.extractUsername(token)
-        val role = jwtService.extractRole(token)
+        claims ?: return onError(exchange, HttpStatus.UNAUTHORIZED)
 
-        return if (email != null && role != null) {
-            val modifiedRequest = exchange
-                .request
-                .mutate()
-                .header("X-Auth-User-Email", email)
+        val userId = jwtService.extractUserId(claims)
+        val role = jwtService.extractRole(claims)
+
+        return if (userId != null && role != null) {
+            val modifiedRequest = exchange.request.mutate()
+                .header("X-Auth-User-Id", userId)
                 .header("X-Auth-User-Role", role)
                 .build()
 
-            chain.filter(
-                exchange
-                    .mutate()
-                    .request(modifiedRequest)
-                    .build()
-            )
-        } else onError(exchange, HttpStatus.UNAUTHORIZED)
+            chain.filter(exchange.mutate().request(modifiedRequest).build())
+        } else {
+            onError(exchange, HttpStatus.UNAUTHORIZED)
+        }
     }
 
     private fun onError(exchange: ServerWebExchange, httpStatus: HttpStatus): Mono<Void> {
