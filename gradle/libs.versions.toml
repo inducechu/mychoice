@@ -4,6 +4,7 @@ kotlin = "2.2.21"
 springBoot = "4.0.4"
 springCloud = "2025.1.1"
 springDependencyManagement = "1.1.7"
+openApiGenerator="7.21.0"
 
 # Библиотеки
 jjwt = "0.12.6"
@@ -52,3 +53,4 @@ kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotl
 kotlin-jpa = { id = "org.jetbrains.kotlin.plugin.jpa", version.ref = "kotlin" }
 spring-boot = { id = "org.springframework.boot", version.ref = "springBoot" }
 spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "springDependencyManagement" }
+openapi-generator = { id = "org.openapi.generator", version.ref = "openApiGenerator"}
