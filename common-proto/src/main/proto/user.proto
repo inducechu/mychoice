@@ -12,14 +12,13 @@ service UserService {
 
 message SyncUserRequest {
   string external_id = 1;
-  string username = 2;
-  string email = 3;
-  string role = 4;
+  string email = 2;
+  string role = 3;
 
-  string first_name = 5;
-  string last_name = 6;
-  int32 age = 7;
-  string city = 8;
+  optional string first_name = 4;
+  optional string last_name = 5;
+  optional int32 age = 6;
+  optional string city = 7;
 }
 
 message SyncUserResponse {
