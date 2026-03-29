@@ -16,7 +16,7 @@ java {
 }
 
 dependencies {
-    //implementation(project(":common-proto"))
+    implementation(project(":common-proto"))
 
     implementation(libs.spring.boot.starter.data.jpa)
     implementation(libs.spring.boot.starter.validation)
