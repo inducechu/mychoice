@@ -27,7 +27,7 @@ spring-boot-starter-validation = { group = "org.springframework.boot", name = "s
 spring-boot-starter-data-jpa = { group = "org.springframework.boot", name = "spring-boot-starter-data-jpa" }
 spring-boot-starter-actuator = { group = "org.springframework.boot", name = "spring-boot-starter-actuator" }
 spring-grpc-server-starter = { group = "org.springframework.grpc", name = "spring-grpc-server-web-spring-boot-starter" }
-
+spring-grpc-client-starter = { group = "org.springframework.grpc", name = "spring-grpc-client-spring-boot-starter" }
 
 # Gateway
 spring-cloud-starter-gateway-server-webflux = { group = "org.springframework.cloud", name = "spring-cloud-starter-gateway-server-webflux" }

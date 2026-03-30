@@ -1,0 +1,7 @@
+spring:
+  grpc:
+    client:
+      channels:
+        userServiceClient:
+          address: 'static://localhost:9090'
+          negotiation-type: plaintext # Обязательно, так как у нас нет SSL (https)

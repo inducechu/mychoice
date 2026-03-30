@@ -14,5 +14,10 @@ data class RegisterRequest(
     @field:Size(min = 6, message = "Password must be at least 6 characters long")
     val password: String,
 
+    val firstName: String,
+    val lastName: String,
+    val age: Int,
+    val city: String,
+
     val role: Role? = Role.ABITURIENT
 )

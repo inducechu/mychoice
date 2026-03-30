@@ -6,6 +6,7 @@ spring:
   config:
     import:
       - "optional:classpath:eureka-client.yaml"
+      - "optional:classpath:grpc-client.yaml"
   datasource:
     url: jdbc:postgresql://localhost:5432/mychoice_auth
     username: postgres

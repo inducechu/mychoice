@@ -16,33 +16,53 @@ java {
     }
 }
 
+configurations {
+    compileOnly {
+        extendsFrom(configurations.annotationProcessor.get())
+    }
+}
+
 dependencies {
+    implementation(project(":common-proto"))
+
+    // Spring Boot Starters
     implementation(libs.spring.boot.starter.webmvc)
     implementation(libs.spring.boot.starter.security)
     implementation(libs.spring.boot.starter.validation)
     implementation(libs.spring.boot.starter.data.jpa)
+    implementation(libs.spring.grpc.client.starter)
 
+    // Discovery
+    implementation(libs.spring.cloud.starter.netflix.eureka.client)
+
+    // Kotlin & JSON
     implementation(libs.kotlin.reflect)
     implementation(libs.jackson.module.kotlin)
-    implementation(libs.springdoc.openapi.webmvc)
 
-    // JWT
+    // gRPC Client & Proto
+    implementation(libs.grpc.services)
+
+    // Database
+    runtimeOnly(libs.postgresql)
+
+    // JWT (JJWT)
     implementation(libs.jjwt.api)
     runtimeOnly(libs.jjwt.impl)
     runtimeOnly(libs.jjwt.jackson)
 
-    // Eureka client
-    implementation(libs.spring.cloud.starter.netflix.eureka.client)
+    // Documentation
+    implementation(libs.springdoc.openapi.webmvc)
 
-    runtimeOnly(libs.postgresql)
-
-    // Тесты
+    // Testing
     testImplementation(libs.spring.boot.starter.test)
     testImplementation(libs.kotlin.test.junit5)
+    testImplementation("org.springframework.grpc:spring-grpc-test")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 dependencyManagement {
     imports {
+        mavenBom(libs.spring.grpc.dependencies.get().toString())
         mavenBom(libs.spring.cloud.dependencies.get().toString())
     }
 }

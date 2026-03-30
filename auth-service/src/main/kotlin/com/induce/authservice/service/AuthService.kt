@@ -8,6 +8,7 @@ import com.induce.authservice.exception.UserNotFoundException
 import com.induce.authservice.model.Role
 import com.induce.authservice.model.User
 import com.induce.authservice.repository.UserRepository
+import jakarta.transaction.Transactional
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 
@@ -16,8 +17,10 @@ class AuthService(
     private val userRepository: UserRepository,
     private val passwordEncoder: BCryptPasswordEncoder,
     private val jwtService: JwtService,
+    private val userSyncClient: UserSyncClient,
 ) {
 
+    @Transactional
     fun register(request: RegisterRequest): User {
         if (userRepository.findByEmail(request.email) != null) {
             throw UserAlreadyExistsException(request.email)
@@ -31,7 +34,10 @@ class AuthService(
             role = request.role ?: Role.ABITURIENT,
         )
 
-        return userRepository.save(newUser)
+        val savedUser = userRepository.save(newUser)
+        userSyncClient.sendUserToProfile(request, savedUser.id.toString())
+        
+        return savedUser
     }
 
     fun login(request: LoginRequest): String {
