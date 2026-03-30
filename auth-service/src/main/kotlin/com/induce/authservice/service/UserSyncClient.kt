@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class UserSyncClient(
-    private val userServiceStub: UserServiceGrpc.UserServiceBlockingStub
+    private val userServiceBlockingStub: UserServiceGrpc.UserServiceBlockingStub
 ) {
     fun sendUserToProfile(request: RegisterRequest, externalId: String) {
         val grpcRequest = SyncUserRequest.newBuilder()
@@ -20,6 +20,6 @@ class UserSyncClient(
             .setCity(request.city)
             .build()
 
-        userServiceStub.syncUser(grpcRequest)
+        userServiceBlockingStub.syncUser(grpcRequest)
     }
 }

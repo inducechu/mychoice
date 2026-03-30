@@ -10,33 +10,49 @@ class UserServiceGrpcImpl(
     private val userRepository: UserRepository
 ) : UserServiceGrpc.UserServiceImplBase() {
 
+    private val logger = org.slf4j.LoggerFactory.getLogger(UserServiceGrpcImpl::class.java)
+
     override fun syncUser(
         request: SyncUserRequest,
         responseObserver: StreamObserver<SyncUserResponse>
     ) {
-        val existingUser = userRepository.findByExternalId(request.externalId)
+        try {
+            logger.info("Received sync request for externalId: ${request.externalId}")
 
-        val userToSave = existingUser?.apply {
-            email = request.email
-        } ?: UserProfile(
-            externalId = request.externalId,
-            username = "user_${request.externalId.take(8)}",
-            email = request.email,
-            firstName = request.firstName,
-            lastName = request.lastName,
-            age = request.age,
-            city = request.city
-        )
+            val safeExternalId = if (request.externalId.isNullOrBlank()) "unknown" else request.externalId
 
-        val savedUser = userRepository.save(userToSave)
+            val existingUser = userRepository.findByExternalId(safeExternalId)
 
-        val response = SyncUserResponse.newBuilder()
-            .setInternalId(savedUser.id!!)
-            .setSuccess(true)
-            .setMessage("Profile synced")
-            .build()
+            val userToSave = existingUser?.apply {
+                email = request.email
+            } ?: UserProfile(
+                externalId = safeExternalId,
+                username = "user_${safeExternalId.take(8)}",
+                email = request.email,
+                firstName = request.firstName,
+                lastName = request.lastName,
+                age = request.age,
+                city = request.city
+            )
 
-        responseObserver.onNext(response)
-        responseObserver.onCompleted()
+            val savedUser = userRepository.save(userToSave)
+
+            val response = SyncUserResponse.newBuilder()
+                .setInternalId(savedUser.id ?: 0L)
+                .setSuccess(true)
+                .setMessage("Profile synced successfully")
+                .build()
+
+            responseObserver.onNext(response)
+            responseObserver.onCompleted()
+
+        } catch (e: Exception) {
+            logger.error("Error during syncUser: ${e.message}", e)
+            responseObserver.onError(
+                io.grpc.Status.INTERNAL
+                    .withDescription("Internal server error during sync: ${e.message}")
+                    .asRuntimeException()
+            )
+        }
     }
 }

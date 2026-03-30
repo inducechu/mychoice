@@ -8,11 +8,9 @@ plugins {
 group = "com.induce"
 version = "0.0.1-SNAPSHOT"
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
+    implementation(platform(libs.spring.grpc.dependencies))
+
     implementation(libs.grpc.services)
     implementation(libs.grpc.protobuf)
     implementation(libs.grpc.stub)

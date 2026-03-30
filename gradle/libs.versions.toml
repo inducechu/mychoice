@@ -9,7 +9,7 @@ springGrpc = "1.0.2"
 protobufPlugin = "0.9.5"
 javax-annotation = "1.3.2"
 protobuf = "4.33.4"
-grpc-java = "1.79.0"
+grpc-java = "1.77.1"
 
 # Библиотеки
 jjwt = "0.12.6"
@@ -26,7 +26,7 @@ spring-boot-starter-security = { group = "org.springframework.boot", name = "spr
 spring-boot-starter-validation = { group = "org.springframework.boot", name = "spring-boot-starter-validation" }
 spring-boot-starter-data-jpa = { group = "org.springframework.boot", name = "spring-boot-starter-data-jpa" }
 spring-boot-starter-actuator = { group = "org.springframework.boot", name = "spring-boot-starter-actuator" }
-spring-grpc-server-starter = { group = "org.springframework.grpc", name = "spring-grpc-server-web-spring-boot-starter" }
+spring-grpc-server-starter = { group = "org.springframework.grpc", name = "spring-grpc-server-spring-boot-starter" }
 spring-grpc-client-starter = { group = "org.springframework.grpc", name = "spring-grpc-client-spring-boot-starter" }
 
 # Gateway
@@ -46,6 +46,7 @@ jjwt-jackson = { group = "io.jsonwebtoken", name = "jjwt-jackson", version.ref =
 spring-grpc-dependencies = { group = "org.springframework.grpc", name = "spring-grpc-dependencies", version.ref = "springGrpc" }
 grpc-services = { group = "io.grpc", name = "grpc-services", version.ref = "grpc-java" }
 spring-grpc-test = { group = "org.springframework.grpc", name = "spring-grpc-test" }
+grpc-netty-shaded = { group = "io.grpc", name = "grpc-netty-shaded", version.ref = "grpc-java" }
 
 protobuf-protoc = { group = "com.google.protobuf", name = "protoc", version.ref = "protobuf" }
 grpc-protoc-gen-java = { group = "io.grpc", name = "protoc-gen-grpc-java", version.ref = "grpc-java" }

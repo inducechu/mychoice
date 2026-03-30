@@ -36,7 +36,7 @@ class AuthService(
 
         val savedUser = userRepository.save(newUser)
         userSyncClient.sendUserToProfile(request, savedUser.id.toString())
-        
+
         return savedUser
     }
 

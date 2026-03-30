@@ -40,7 +40,7 @@ dependencies {
     implementation(libs.jackson.module.kotlin)
 
     // gRPC Client & Proto
-    implementation(libs.grpc.services)
+    implementation(libs.grpc.netty.shaded)
 
     // Database
     runtimeOnly(libs.postgresql)

@@ -21,11 +21,19 @@ dependencies {
     implementation(libs.spring.boot.starter.data.jpa)
     implementation(libs.spring.boot.starter.validation)
     implementation(libs.spring.boot.starter.webmvc)
-    implementation(libs.grpc.services)
-    implementation(libs.kotlin.reflect)
     implementation(libs.spring.cloud.starter.netflix.eureka.client)
     implementation(libs.spring.grpc.server.starter)
+
+    implementation(libs.grpc.services)
+    implementation(libs.grpc.netty.shaded)
+    modules {
+        module("io.grpc:grpc-netty") {
+            replacedBy("io.grpc:grpc-netty-shaded", "Use Netty shaded instead of regular Netty")
+        }
+    }
+
     implementation(libs.jackson.module.kotlin)
+    implementation(libs.kotlin.reflect)
 
     runtimeOnly(libs.postgresql)
 
