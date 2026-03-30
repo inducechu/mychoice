@@ -5,6 +5,10 @@ spring:
   application:
     name: user-service
 
+  config:
+    import:
+      - "optional:classpath:eureka-client.yaml"
+
   datasource:
     url: jdbc:postgresql://localhost:5432/mychoice_user
     username: postgres

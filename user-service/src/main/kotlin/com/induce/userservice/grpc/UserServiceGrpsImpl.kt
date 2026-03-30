@@ -22,9 +22,10 @@ class UserServiceGrpcImpl(
             externalId = request.externalId,
             username = "user_${request.externalId.take(8)}",
             email = request.email,
-            firstName = request.firstName.ifBlank { null },
-            lastName = request.lastName.ifBlank { null },
-            city = request.city.ifBlank { null }
+            firstName = request.firstName,
+            lastName = request.lastName,
+            age = request.age,
+            city = request.city
         )
 
         val savedUser = userRepository.save(userToSave)
