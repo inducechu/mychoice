@@ -1,16 +1,18 @@
 package com.induce.userservice.grpc
 
+import com.induce.userservice.model.Role
 import com.induce.userservice.model.UserProfile
-import com.induce.userservice.repository.UserRepository
+import com.induce.userservice.repository.UserProfileRepository
 import io.grpc.stub.StreamObserver
+import org.slf4j.LoggerFactory
 import org.springframework.grpc.server.service.GrpcService
 
 @GrpcService
 class UserServiceGrpcImpl(
-    private val userRepository: UserRepository
+    private val userProfileRepository: UserProfileRepository
 ) : UserServiceGrpc.UserServiceImplBase() {
 
-    private val logger = org.slf4j.LoggerFactory.getLogger(UserServiceGrpcImpl::class.java)
+    private val logger = LoggerFactory.getLogger(UserServiceGrpcImpl::class.java)
 
     override fun syncUser(
         request: SyncUserRequest,
@@ -21,7 +23,7 @@ class UserServiceGrpcImpl(
 
             val safeExternalId = if (request.externalId.isNullOrBlank()) "unknown" else request.externalId
 
-            val existingUser = userRepository.findByExternalId(safeExternalId)
+            val existingUser = userProfileRepository.findByExternalId(safeExternalId)
 
             val userToSave = existingUser?.apply {
                 email = request.email
@@ -29,13 +31,14 @@ class UserServiceGrpcImpl(
                 externalId = safeExternalId,
                 username = "user_${safeExternalId.take(8)}",
                 email = request.email,
+                role = Role.valueOf(request.role.uppercase()),
                 firstName = request.firstName,
                 lastName = request.lastName,
                 age = request.age,
                 city = request.city
             )
 
-            val savedUser = userRepository.save(userToSave)
+            val savedUser = userProfileRepository.save(userToSave)
 
             val response = SyncUserResponse.newBuilder()
                 .setInternalId(savedUser.id ?: 0L)

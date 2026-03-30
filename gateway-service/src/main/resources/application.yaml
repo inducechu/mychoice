@@ -8,15 +8,7 @@ spring:
       - "optional:classpath:open-endpoints.yaml"
       - "optional:classpath:routes.yaml"
       - "optional:classpath:eureka-client.yaml"
-springdoc:
-  swagger-ui:
-    path: /swagger-ui.html
-    urls:
-      - name: Auth Service
-        url: /api/auth/v3/api-docs
-        displayName: Сервис Авторизации
-  api-docs:
-    path: /v3/api-docs
+      - "optional:classpath:spring-doc.yaml"
 management:
   endpoints:
     web:

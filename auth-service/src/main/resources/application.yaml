@@ -7,6 +7,7 @@ spring:
     import:
       - "optional:classpath:eureka-client.yaml"
       - "optional:classpath:grpc-client.yaml"
+      - "optional:classpath:spring-doc.yaml"
   datasource:
     url: jdbc:postgresql://localhost:5432/mychoice_auth
     username: postgres
@@ -20,11 +21,6 @@ spring:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
-springdoc:
-  api-docs:
-    path: /api/auth/v3/api-docs
-  swagger-ui:
-    path: /api/auth/swagger-ui.html
 jwt:
   secret: "9a4f4c35456584c35063138072105151241121112413151235346314151617181920"
   expiration: 86400000

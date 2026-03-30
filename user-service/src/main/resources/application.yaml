@@ -8,6 +8,7 @@ spring:
   config:
     import:
       - "optional:classpath:eureka-client.yaml"
+      - "optional:classpath:spring-doc.yaml"
 
   datasource:
     url: jdbc:postgresql://localhost:5432/mychoice_user
