@@ -7,12 +7,13 @@ import com.induce.userservice.exception.UserNotFoundException
 import com.induce.userservice.repository.UserProfileRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.util.UUID
 
 @Service
 class UserProfileService(
     private val repository: UserProfileRepository
 ) {
-    fun getMyProfile(externalId: String): MyProfileResponse {
+    fun getMyProfile(externalId: UUID): MyProfileResponse {
         val entity = repository.findByExternalId(externalId)
             ?: throw RuntimeException("Profile not found")
 
@@ -39,7 +40,7 @@ class UserProfileService(
     }
 
     @Transactional
-    fun updateProfile(externalId: String, request: UpdateProfileRequest): MyProfileResponse {
+    fun updateProfile(externalId: UUID, request: UpdateProfileRequest): MyProfileResponse {
         val entity = repository.findByExternalId(externalId)
             ?: throw UserNotFoundException("User $externalId not found")
 

@@ -3,9 +3,11 @@ package com.induce.userservice.grpc
 import com.induce.userservice.model.Role
 import com.induce.userservice.model.UserProfile
 import com.induce.userservice.repository.UserProfileRepository
+import com.induce.userservice.util.UsernameGenerator
 import io.grpc.stub.StreamObserver
 import org.slf4j.LoggerFactory
 import org.springframework.grpc.server.service.GrpcService
+import java.util.UUID
 
 @GrpcService
 class UserServiceGrpcImpl(
@@ -21,15 +23,19 @@ class UserServiceGrpcImpl(
         try {
             logger.info("Received sync request for externalId: ${request.externalId}")
 
-            val safeExternalId = if (request.externalId.isNullOrBlank()) "unknown" else request.externalId
+            val externalId = try {
+                UUID.fromString(request.externalId)
+            } catch (e: Exception) {
+                throw IllegalArgumentException("Invalid UUID format ${e.message}")
+            }
 
-            val existingUser = userProfileRepository.findByExternalId(safeExternalId)
+            val existingUser = userProfileRepository.findByExternalId(externalId)
 
             val userToSave = existingUser?.apply {
                 email = request.email
             } ?: UserProfile(
-                externalId = safeExternalId,
-                username = "user_${safeExternalId.take(8)}",
+                externalId = externalId,
+                username = UsernameGenerator.generate(),
                 email = request.email,
                 role = Role.valueOf(request.role.uppercase()),
                 firstName = request.firstName,
@@ -49,11 +55,11 @@ class UserServiceGrpcImpl(
             responseObserver.onNext(response)
             responseObserver.onCompleted()
 
-        } catch (e: Exception) {
+        } catch (e: IllegalArgumentException) {
             logger.error("Error during syncUser: ${e.message}", e)
             responseObserver.onError(
-                io.grpc.Status.INTERNAL
-                    .withDescription("Internal server error during sync: ${e.message}")
+                io.grpc.Status.INVALID_ARGUMENT
+                    .withDescription(e.message)
                     .asRuntimeException()
             )
         }

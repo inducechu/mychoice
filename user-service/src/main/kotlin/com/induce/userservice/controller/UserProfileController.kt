@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.util.UUID
 
 @RestController
 @RequestMapping("/api/users")
@@ -21,7 +22,7 @@ class UserProfileController(
 
     @GetMapping("/me")
     fun getMe(
-        @RequestHeader("X-Auth-User-Id") userId: String
+        @RequestHeader("X-Auth-User-Id") userId: UUID
     ): ResponseEntity<MyProfileResponse> {
         return ResponseEntity.ok(profileService.getMyProfile(userId))
     }
@@ -35,7 +36,7 @@ class UserProfileController(
 
     @PutMapping("/me")
     fun updateMe(
-        @RequestHeader("X-Auth-User-Id") userId: String,
+        @RequestHeader("X-Auth-User-Id") userId: UUID,
         @RequestBody request: UpdateProfileRequest
     ): ResponseEntity<MyProfileResponse> {
         return ResponseEntity.ok(profileService.updateProfile(userId, request))
