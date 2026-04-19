@@ -8,5 +8,8 @@ springdoc:
       - name: User Service
         url: /api/users/v3/api-docs
         displayName: Сервис Пользователя
+      - name: University Service
+        url: /api/university/v3/api-docs
+        displayName: Сервис Университета
   api-docs:
     path: /v3/api-docs
