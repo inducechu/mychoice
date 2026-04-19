@@ -4,6 +4,7 @@ import com.induce.universityservice.dto.CreateFacultyRequest
 import com.induce.universityservice.dto.CreateUniversityRequest
 import com.induce.universityservice.dto.FacultyResponse
 import com.induce.universityservice.dto.FacultyShortResponse
+import com.induce.universityservice.dto.PageResponse
 import com.induce.universityservice.dto.UniversityResponse
 import com.induce.universityservice.service.FacultyService
 import com.induce.universityservice.service.UniversityService
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -73,5 +75,20 @@ class UniversityController(
         @RequestBody @Valid request: CreateFacultyRequest
     ): FacultyResponse {
         return facultyService.createFaculty(universityId, request)
+    }
+
+    @GetMapping
+    @Operation(
+        summary = "Получить страницу университетов",
+        description = "Возвращает страницу университетов с пагинацией"
+    )
+    fun getAllUniversities(
+        @RequestParam(defaultValue = "0")
+        page: Int,
+
+        @RequestParam(defaultValue = "10")
+        size: Int
+    ): PageResponse<UniversityResponse> {
+        return universityService.getAllUniversities(page, size)
     }
 }

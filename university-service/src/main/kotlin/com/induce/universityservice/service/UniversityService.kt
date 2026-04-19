@@ -2,10 +2,12 @@ package com.induce.universityservice.service
 
 import com.induce.universityservice.dto.CreateUniversityRequest
 import com.induce.universityservice.dto.FacultyShortResponse
+import com.induce.universityservice.dto.PageResponse
 import com.induce.universityservice.dto.UniversityResponse
 import com.induce.universityservice.model.University
 import com.induce.universityservice.repository.FacultyRepository
 import com.induce.universityservice.repository.UniversityRepository
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 
@@ -64,6 +66,28 @@ class UniversityService(
             city = saved.city,
             description = saved.description,
             rating = saved.rating
+        )
+    }
+
+    fun getAllUniversities(page: Int, size: Int): PageResponse<UniversityResponse> {
+        val pageable = PageRequest.of(page, size)
+        val result = universityRepository.findAll(pageable)
+
+        return PageResponse(
+            content = result.content.map {
+                UniversityResponse(
+                    id = it.id!!,
+                    code = it.code,
+                    name = it.name,
+                    city = it.city,
+                    description = it.description,
+                    rating = it.rating
+                )
+            },
+            page = result.number,
+            size = result.size,
+            totalElements = result.totalElements,
+            totalPages = result.totalPages
         )
     }
 }
