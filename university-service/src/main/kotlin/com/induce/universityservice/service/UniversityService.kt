@@ -1,10 +1,13 @@
 package com.induce.universityservice.service
 
+import com.induce.universityservice.dto.CreateUniversityRequest
 import com.induce.universityservice.dto.FacultyShortResponse
 import com.induce.universityservice.dto.UniversityResponse
+import com.induce.universityservice.model.University
 import com.induce.universityservice.repository.FacultyRepository
 import com.induce.universityservice.repository.UniversityRepository
 import org.springframework.stereotype.Service
+import java.math.BigDecimal
 
 @Service
 class UniversityService(
@@ -22,7 +25,7 @@ class UniversityService(
             name = entity.name,
             city = entity.city,
             description = entity.description,
-            rating = entity.rating.toString()
+            rating = entity.rating
         )
     }
 
@@ -33,8 +36,34 @@ class UniversityService(
             FacultyShortResponse(
                 id = it.id!!,
                 name = it.name,
-                rating = it.rating.toString()
+                rating = it.rating
             )
         }
+    }
+
+    fun createUniversity(request: CreateUniversityRequest): UniversityResponse {
+
+        if (universityRepository.findByCode(request.code) != null) {
+            throw RuntimeException("University with code ${request.code} already exists")
+        }
+
+        val university = University(
+            code = request.code,
+            name = request.name,
+            city = request.city,
+            description = request.description,
+            rating = BigDecimal.ZERO
+        )
+
+        val saved = universityRepository.save(university)
+
+        return UniversityResponse(
+            id = saved.id!!,
+            code = saved.code,
+            name = saved.name,
+            city = saved.city,
+            description = saved.description,
+            rating = saved.rating
+        )
     }
 }

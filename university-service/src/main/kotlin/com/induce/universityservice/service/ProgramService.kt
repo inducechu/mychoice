@@ -2,6 +2,7 @@ package com.induce.universityservice.service
 
 import com.induce.universityservice.dto.CreateProgramRequest
 import com.induce.universityservice.dto.DirectionResponse
+import com.induce.universityservice.dto.FacultyShortResponse
 import com.induce.universityservice.dto.ProgramResponse
 import com.induce.universityservice.model.Program
 import com.induce.universityservice.repository.DirectionRepository
@@ -25,13 +26,17 @@ class ProgramService(
             id = program.id!!,
             name = program.name,
             description = program.description,
-            rating = program.rating.toString(),
-            degree = program.degree.name,
+            rating = program.rating,
+            degree = program.degree,
             direction = DirectionResponse(
                 code = program.direction.code,
                 name = program.direction.name
             ),
-            facultyId = program.faculty.id!!
+            faculty = FacultyShortResponse(
+                program.faculty.id!!,
+                program.faculty.name,
+                program.faculty.rating
+            )
         )
     }
 
@@ -61,13 +66,17 @@ class ProgramService(
             id = saved.id!!,
             name = saved.name,
             description = saved.description,
-            rating = saved.rating.toString(),
-            degree = saved.degree.name,
+            rating = saved.rating,
+            degree = saved.degree,
             direction = DirectionResponse(
-                code = direction.code,
-                name = direction.name
+                code = saved.direction.code,
+                name = saved.direction.name
             ),
-            facultyId = faculty.id!!
+            faculty = FacultyShortResponse(
+                saved.faculty.id!!,
+                saved.faculty.name,
+                saved.faculty.rating
+            )
         )
     }
 }
