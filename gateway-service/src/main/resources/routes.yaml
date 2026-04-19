@@ -28,4 +28,4 @@ spring:
         - id: university-service
           uri: lb://university-service
           predicates:
-            - Path=/  api/university/**
+            - Path=/api/universities/**, /api/faculties/**, /api/programs/**, /api/university/**

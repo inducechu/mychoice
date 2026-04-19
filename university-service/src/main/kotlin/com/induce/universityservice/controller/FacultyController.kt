@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/api/university/faculties")
+@RequestMapping("/api/faculties")
 class FacultyController(
     private val service: FacultyService
 ) {
