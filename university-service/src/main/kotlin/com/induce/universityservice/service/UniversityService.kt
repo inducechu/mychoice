@@ -4,6 +4,7 @@ import com.induce.universityservice.dto.CreateUniversityRequest
 import com.induce.universityservice.dto.FacultyShortResponse
 import com.induce.universityservice.dto.PageResponse
 import com.induce.universityservice.dto.UniversityResponse
+import com.induce.universityservice.exception.EntityAlreadyExistsException
 import com.induce.universityservice.model.University
 import com.induce.universityservice.repository.FacultyRepository
 import com.induce.universityservice.repository.UniversityRepository
@@ -46,7 +47,7 @@ class UniversityService(
     fun createUniversity(request: CreateUniversityRequest): UniversityResponse {
 
         if (universityRepository.findByCode(request.code) != null) {
-            throw RuntimeException("University with code ${request.code} already exists")
+            throw EntityAlreadyExistsException("University with code ${request.code} already exists")
         }
 
         val university = University(
