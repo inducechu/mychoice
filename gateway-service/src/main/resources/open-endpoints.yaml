@@ -6,6 +6,7 @@ app:
       - "/api/auth/v3/api-docs"
       - "/api/users/v3/api-docs"
       - "/api/university/v3/api-docs"
+      - "/api/review/v3/api-docs"
       - "/v3/api-docs/**"
       - "/swagger-ui/**"
       - "/webjars"

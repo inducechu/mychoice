@@ -8,7 +8,7 @@ import java.util.UUID
 
 @Repository
 interface ReviewRepository : JpaRepository<Review, UUID> {
-    fun existsByUserIdAndProgramId(userId: Long, programId: Long): Boolean
+    fun existsByUserIdAndProgramId(userId: UUID, programId: Long): Boolean
 
     @Query("SELECT COUNT(r), AVG(r.score) FROM Review r WHERE r.programId = :programId")
     fun getStatsByProgramId(programId: Long): Array<Any?>

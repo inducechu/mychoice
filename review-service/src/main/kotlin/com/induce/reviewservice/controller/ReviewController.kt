@@ -10,15 +10,16 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.util.UUID
 
 
 @RestController
-@RequestMapping("/api/reviews")
+@RequestMapping("/api/review")
 class ReviewController(private val reviewService: ReviewService) {
 
-    @PostMapping
+    @PostMapping("/save")
     fun createReview(
-        @RequestHeader("X-User-Id") userId: Long,
+        @RequestHeader("X-Auth-User-Id") userId: UUID,
         @RequestBody request: ReviewRequest
     ): ResponseEntity<ReviewResponse> {
         val review = reviewService.createReview(

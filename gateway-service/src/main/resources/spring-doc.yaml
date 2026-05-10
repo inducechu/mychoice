@@ -11,5 +11,8 @@ springdoc:
       - name: University Service
         url: /api/university/v3/api-docs
         displayName: Сервис Университета
+      - name: Review Service
+        url: /api/review/v3/api-docs
+        displayName: Сервис Комментариев
   api-docs:
     path: /v3/api-docs

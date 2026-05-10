@@ -24,8 +24,8 @@ class Review(
     @GeneratedValue(strategy = GenerationType.UUID)
     val id: UUID? = null,
 
-    @Column(name = "user_id", nullable = false)
-    val userId: Long,
+    @Column(name = "user_id", unique = true, nullable = false)
+    val userId: UUID,
 
     @Column(name = "program_id", nullable = false)
     val programId: Long,
@@ -41,6 +41,6 @@ class Review(
     @Column(name = "created_at", nullable = false)
     val createdAt: LocalDateTime = LocalDateTime.now(),
 
-    @Column(name = "updated_at")
-    var updatedAt: LocalDateTime? = null
+    @Column(name = "updated_at", nullable = false)
+    var updatedAt: LocalDateTime? = LocalDateTime.now(),
 )

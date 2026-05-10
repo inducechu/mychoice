@@ -29,3 +29,7 @@ spring:
           uri: lb://university-service
           predicates:
             - Path=/api/universities/**, /api/faculties/**, /api/programs/**, /api/university/**
+        - id: review-service
+          uri: lb://review-service
+          predicates:
+            - Path=/api/review/**

@@ -1,3 +1,26 @@
+server:
+  port: 8084
 spring:
   application:
     name: review-service
+  config:
+    import:
+      - "optional:classpath:eureka-client.yaml"
+      - "optional:classpath:grpc-client.yaml"
+      - "optional:classpath:spring-doc.yaml"
+  datasource:
+    url: jdbc:postgresql://localhost:5432/mychoice_review
+    username: postgres
+    password: 1234
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  grpc:
+    server:
+      port: 9091

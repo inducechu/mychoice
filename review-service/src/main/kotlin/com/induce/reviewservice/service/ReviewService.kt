@@ -4,6 +4,7 @@ import com.induce.reviewservice.model.Review
 import com.induce.reviewservice.repository.ReviewRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.util.UUID
 
 @Service
 class ReviewService(private val reviewRepository: ReviewRepository) {
@@ -12,7 +13,7 @@ class ReviewService(private val reviewRepository: ReviewRepository) {
     private val m = 5.0
 
     @Transactional
-    fun createReview(userId: Long, programId: Long, score: Int, comment: String?): Review {
+    fun createReview(userId: UUID, programId: Long, score: Int, comment: String?): Review {
         if (reviewRepository.existsByUserIdAndProgramId(userId, programId)) {
             throw IllegalStateException("Вы уже оставили отзыв на эту программу")
         }
