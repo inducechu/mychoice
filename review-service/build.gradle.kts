@@ -23,11 +23,23 @@ configurations {
 }
 
 dependencies {
+    implementation(project(":common-proto"))
 
     // Spring Boot Starters
     implementation(libs.spring.boot.starter.webmvc)
     implementation(libs.spring.boot.starter.validation)
     implementation(libs.spring.boot.starter.data.jpa)
+
+    // gRPC
+    implementation(libs.spring.grpc.server.starter)
+    implementation(libs.spring.grpc.client.starter)
+
+    implementation(libs.grpc.netty.shaded)
+    modules {
+        module("io.grpc:grpc-netty") {
+            replacedBy("io.grpc:grpc-netty-shaded", "Use Netty shaded instead of regular Netty")
+        }
+    }
 
     // Discovery
     implementation(libs.spring.cloud.starter.netflix.eureka.client)
@@ -41,6 +53,12 @@ dependencies {
 
     // Documentation
     implementation(libs.springdoc.openapi.webmvc)
+
+    // Testing
+    testImplementation(libs.spring.boot.starter.test)
+    testImplementation(libs.kotlin.test.junit5)
+    testImplementation(libs.spring.grpc.test)
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 dependencyManagement {
