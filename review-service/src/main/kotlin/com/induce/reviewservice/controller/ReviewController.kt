@@ -7,8 +7,6 @@ import com.induce.reviewservice.dto.ReviewResponse
 import com.induce.reviewservice.dto.toResponse
 import com.induce.reviewservice.dto.toReviewPagedResponse
 import com.induce.reviewservice.service.ReviewService
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.ModelAttribute
