@@ -14,47 +14,45 @@ class RatingUpdateService(
     private val reviewClient: ReviewClient,
     private val universityRepository: UniversityRepository
 ) {
-    private val logger = LoggerFactory.getLogger(RatingUpdateService::class.java)
+    private val logger = LoggerFactory.getLogger(this::class.java)
 
     @Scheduled(fixedRateString = "\${app.scheduling.rate}")
     @Transactional
     fun updateHierarchyRatings() {
         logger.info("Starting scheduled rating recalculation...")
 
-        val ratingList = reviewClient.fetchUpdatedRatings()
-        val ratingsMap = ratingList.ratingsList.associate { it.programId to it.bayesianRating }
+        val ratingsMap = reviewClient.fetchUpdatedRatings()
+            .ratingsList
+            .associate { it.programId to it.bayesianRating.toBigDecimal().setScale(1, RoundingMode.HALF_UP) }
 
-        val universities = universityRepository.findAll()
-
-        universities.forEach { university ->
+        universityRepository.findAll().forEach { university ->
             university.faculties.forEach { faculty ->
                 faculty.programs.forEach { program ->
-                    ratingsMap[program.id]?.let {
-                        program.rating = it.toBigDecimal().setScale(1, RoundingMode.HALF_UP)
-                    }
+                    ratingsMap[program.id]?.let { program.rating = it }
                 }
 
-                val activePrograms = faculty.programs.filter { it.rating > BigDecimal.ZERO }
-
-                if (activePrograms.isNotEmpty()) {
-                    val sum = activePrograms.map { it.rating }.reduce { a, b -> a + b }
-                    faculty.rating = sum.divide(activePrograms.size.toBigDecimal(), 1, RoundingMode.HALF_UP)
-                } else {
-                    faculty.rating = BigDecimal.ZERO.setScale(1)
-                }
+                faculty.rating = faculty.programs
+                    .map { it.rating }
+                    .averageNonZero()
             }
 
-            val activeFaculties = university.faculties.filter { it.rating > BigDecimal.ZERO }
-
-            if (activeFaculties.isNotEmpty()) {
-                val sum = activeFaculties.map { it.rating }.reduce { a, b -> a + b }
-                university.rating = sum.divide(activeFaculties.size.toBigDecimal(), 1, RoundingMode.HALF_UP)
-            } else {
-                university.rating = BigDecimal.ZERO.setScale(1)
-            }
+            // Считаем ВУЗ
+            university.rating = university.faculties
+                .map { it.rating }
+                .averageNonZero()
         }
 
-        universityRepository.saveAll(universities)
-        logger.info("Ratings hierarchy updated successfully (zeros excluded)")
+        logger.info("Ratings hierarchy updated successfully")
     }
+
+    /**
+     * Extension-функция для красивого расчета среднего значения BigDecimal
+     */
+    private fun List<BigDecimal>.averageNonZero(): BigDecimal =
+        this.filter { it > BigDecimal.ZERO }
+            .takeIf { it.isNotEmpty() }
+            ?.let { activeList ->
+                activeList.reduce(BigDecimal::add)
+                    .divide(activeList.size.toBigDecimal(), 1, RoundingMode.HALF_UP)
+            } ?: BigDecimal.ZERO.setScale(1)
 }
