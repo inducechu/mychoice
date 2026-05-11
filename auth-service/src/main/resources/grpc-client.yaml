@@ -1,7 +1,6 @@
 spring:
   grpc:
     client:
-      channels:
-        user-service:
-          address: 'discovery:///user-service'
-          negotiation-type: plaintext
+      default-channel:
+        address: "static://localhost:9092"
+        negotiation-type: plaintext

@@ -5,4 +5,4 @@ eureka:
   instance:
     hostname: localhost
     metadata-map:
-      grpc.port: "9090"
+      grpc.port: "9092"
