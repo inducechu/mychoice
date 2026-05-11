@@ -6,6 +6,7 @@ spring:
   config:
     import:
       - "optional:classpath:spring-doc.yaml"
+      - "optional:classpath:grpc-client.yaml"
       - "optional:classpath:eureka-client.yaml"
   datasource:
     url: jdbc:postgresql://localhost:5432/mychoice_university
@@ -20,3 +21,6 @@ spring:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
+app:
+  scheduling:
+    rate: 30s

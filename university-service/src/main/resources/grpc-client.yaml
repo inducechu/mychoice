@@ -1,0 +1,6 @@
+spring:
+  grpc:
+    client:
+      default-channel:
+        address: "static://localhost:9091"
+        negotiation-type: plaintext

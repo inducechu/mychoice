@@ -23,11 +23,13 @@ configurations {
 }
 
 dependencies {
+    implementation(project(":common-proto"))
 
     // Spring Boot Starters
     implementation(libs.spring.boot.starter.webmvc)
     implementation(libs.spring.boot.starter.validation)
     implementation(libs.spring.boot.starter.data.jpa)
+    implementation(libs.spring.grpc.client.starter)
 
     // Discovery
     implementation(libs.spring.cloud.starter.netflix.eureka.client)
@@ -35,6 +37,9 @@ dependencies {
     // Kotlin & JSON
     implementation(libs.kotlin.reflect)
     implementation(libs.jackson.module.kotlin)
+
+    // gRPC
+    implementation(libs.grpc.netty.shaded)
 
     // Database
     runtimeOnly(libs.postgresql)
