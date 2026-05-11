@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.math.BigDecimal
 import java.math.RoundingMode
 
 @Service
@@ -20,7 +21,6 @@ class RatingUpdateService(
     fun updateHierarchyRatings() {
         logger.info("Starting scheduled rating recalculation...")
 
-        // 1. Получаем данные через наш новый клиент
         val ratingList = reviewClient.fetchUpdatedRatings()
         val ratingsMap = ratingList.ratingsList.associate { it.programId to it.bayesianRating }
 
@@ -29,29 +29,32 @@ class RatingUpdateService(
         universities.forEach { university ->
             university.faculties.forEach { faculty ->
                 faculty.programs.forEach { program ->
-                    // Обновляем рейтинг программы, если он пришел из review-service
                     ratingsMap[program.id]?.let {
                         program.rating = it.toBigDecimal().setScale(1, RoundingMode.HALF_UP)
                     }
                 }
 
-                // 2. Рейтинг факультета = среднее по его программам
-                if (faculty.programs.isNotEmpty()) {
-                    val avg = faculty.programs.map { it.rating }.reduce { a, b -> a + b }
-                        .divide(faculty.programs.size.toBigDecimal(), 1, RoundingMode.HALF_UP)
-                    faculty.rating = avg
+                val activePrograms = faculty.programs.filter { it.rating > BigDecimal.ZERO }
+
+                if (activePrograms.isNotEmpty()) {
+                    val sum = activePrograms.map { it.rating }.reduce { a, b -> a + b }
+                    faculty.rating = sum.divide(activePrograms.size.toBigDecimal(), 1, RoundingMode.HALF_UP)
+                } else {
+                    faculty.rating = BigDecimal.ZERO.setScale(1)
                 }
             }
 
-            // 3. Рейтинг ВУЗа = среднее по его факультетам
-            if (university.faculties.isNotEmpty()) {
-                val avg = university.faculties.map { it.rating }.reduce { a, b -> a + b }
-                    .divide(university.faculties.size.toBigDecimal(), 1, RoundingMode.HALF_UP)
-                university.rating = avg
+            val activeFaculties = university.faculties.filter { it.rating > BigDecimal.ZERO }
+
+            if (activeFaculties.isNotEmpty()) {
+                val sum = activeFaculties.map { it.rating }.reduce { a, b -> a + b }
+                university.rating = sum.divide(activeFaculties.size.toBigDecimal(), 1, RoundingMode.HALF_UP)
+            } else {
+                university.rating = BigDecimal.ZERO.setScale(1)
             }
         }
 
         universityRepository.saveAll(universities)
-        logger.info("Ratings hierarchy updated successfully")
+        logger.info("Ratings hierarchy updated successfully (zeros excluded)")
     }
 }
