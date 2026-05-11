@@ -2,8 +2,11 @@ package com.induce.reviewservice.service
 
 import com.induce.reviewservice.model.Review
 import com.induce.reviewservice.repository.ReviewRepository
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 import java.util.UUID
 
 @Service
@@ -13,35 +16,31 @@ class ReviewService(private val reviewRepository: ReviewRepository) {
     private val m = 5.0
 
     @Transactional
-    fun createReview(userId: UUID, programId: Long, score: Int, comment: String?): Review {
-        if (reviewRepository.existsByUserIdAndProgramId(userId, programId)) {
-            throw IllegalStateException("Вы уже оставили отзыв на эту программу")
-        }
+    fun saveOrUpdateReview(userId: UUID, programId: Long, score: Int, comment: String?): Review {
+        val existingReview = reviewRepository.findByUserIdAndProgramId(userId, programId)
 
-        // TODO: Здесь будет gRPC вызов для проверки, учится ли студент на программе
-
-        val review = Review(
-            userId = userId,
-            programId = programId,
-            score = score,
-            comment = comment
-        )
-        return reviewRepository.save(review)
+        return existingReview?.apply {
+            this.score = score
+            this.comment = comment
+            this.updatedAt = LocalDateTime.now()
+        }?.let { reviewRepository.save(it) }
+            ?: reviewRepository.save(
+                Review(
+                    userId = userId,
+                    programId = programId,
+                    score = score,
+                    comment = comment
+                )
+            )
     }
 
-    /**
-     * Расчет Bayesian Average для конкретной программы
-     * WR = (v * R + m * C) / (v + m)
-     */
-    fun calculateBayesianRating(programId: Long): Double {
-        val stats = reviewRepository.getStatsByProgramId(programId)
-        val v = (stats[0] as? Long)?.toDouble() ?: 0.0
-        val r = (stats[1] as? Double) ?: 0.0
+    @Transactional(readOnly = true)
+    fun getUserReview(userId: UUID, programId: Long): Review? {
+        return reviewRepository.findByUserIdAndProgramId(userId, programId)
+    }
 
-        if (v == 0.0) return 0.0
-
-        val c = reviewRepository.getGlobalAverageScore() ?: 0.0
-
-        return (v * r + m * c) / (v + m)
+    @Transactional(readOnly = true)
+    fun getProgramReviews(programId: Long, pageable: Pageable): Page<Review> {
+        return reviewRepository.findAllByProgramId(programId, pageable)
     }
 }
