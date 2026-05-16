@@ -2,9 +2,15 @@ package com.induce.universityservice.repository
 
 import com.induce.universityservice.model.Program
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
+import java.math.BigDecimal
 
 interface ProgramRepository : JpaRepository<Program, Long> {
+
+    @Modifying
+    @Query("UPDATE programs SET rating = :rating WHERE id = :id", nativeQuery = true)
+    fun updateRatingById(id: Long, rating: BigDecimal): Int
 
     @Query("""
         SELECT p FROM Program p
@@ -15,10 +21,6 @@ interface ProgramRepository : JpaRepository<Program, Long> {
 
     fun findWithDirectionById(id: Long): Program?
 
-    @Query("""
-    SELECT p FROM Program p
-    JOIN FETCH p.direction
-    WHERE p.id = :id
-""")
+    @Query("SELECT p FROM Program p JOIN FETCH p.direction WHERE p.id = :id")
     fun findDetailedById(id: Long): Program?
 }
