@@ -1,62 +1,55 @@
 package com.induce.reviewservice.grpc
 
+import com.induce.reviewservice.repository.ProgramStatsRepository
 import com.induce.reviewservice.repository.ReviewRepository
+import io.grpc.Status.INTERNAL
 import io.grpc.stub.StreamObserver
 import org.slf4j.LoggerFactory
 import org.springframework.grpc.server.service.GrpcService
 
 @GrpcService
 class ReviewGrpcServiceImpl(
-    private val reviewRepository: ReviewRepository
+    private val programStatsRepository: ProgramStatsRepository
 ) : ReviewInternalServiceGrpc.ReviewInternalServiceImplBase() {
 
     private val logger = LoggerFactory.getLogger(ReviewGrpcServiceImpl::class.java)
-
-    // m - константа для Bayesian Average (минимальное кол-во голосов для доверия)
     private val m = 5.0
 
-    override fun getUpdatedRatings(
-        request: Empty,
-        responseObserver: StreamObserver<RatingList>
-    ) {
+    override fun getUpdatedRatings(request: Empty, responseObserver: StreamObserver<RatingList>) {
         try {
-            logger.info("Received request to fetch updated ratings for all programs")
+            logger.info("Fetching updated ratings from pre-calculated stats")
 
-            val globalAverage = reviewRepository.getGlobalAverageScore() ?: 0.0
+            val allStats = programStatsRepository.findAll()
 
-            val allStats = reviewRepository.getAllProgramsStats()
+            val totalScoreAllPrograms = allStats.sumOf { it.totalScoreSum }
+            val totalReviewsAllPrograms = allStats.sumOf { it.reviewCount }
+            val globalAverage = if (totalReviewsAllPrograms > 0) {
+                totalScoreAllPrograms.toDouble() / totalReviewsAllPrograms
+            } else 0.0
 
             val ratingListBuilder = RatingList.newBuilder()
 
             allStats.forEach { stat ->
-                val programId = stat[0] as Long
-                val v = (stat[1] as Long).toDouble()
-                val r = (stat[2] as Double)
+                val v = stat.reviewCount.toDouble()
+                if (v > 0) {
+                    val r = stat.totalScoreSum.toDouble() / v
+                    val bayesianRating = (v * r + m * globalAverage) / (v + m)
 
-                val bayesianRating = (v * r + m * globalAverage) / (v + m)
-
-                ratingListBuilder.addRatings(
-                    RatingEntry.newBuilder()
-                        .setProgramId(programId)
-                        .setBayesianRating(bayesianRating)
-                        .build()
-                )
+                    ratingListBuilder.addRatings(
+                        RatingEntry.newBuilder()
+                            .setProgramId(stat.programId)
+                            .setBayesianRating(bayesianRating)
+                            .build()
+                    )
+                }
             }
 
-            val response = ratingListBuilder.build()
-
-            logger.info("Successfully calculated ratings for ${response.ratingsCount} programs")
-
-            responseObserver.onNext(response)
+            responseObserver.onNext(ratingListBuilder.build())
             responseObserver.onCompleted()
 
         } catch (e: Exception) {
             logger.error("Error during getUpdatedRatings: ${e.message}", e)
-            responseObserver.onError(
-                io.grpc.Status.INTERNAL
-                    .withDescription("Failed to calculate ratings: ${e.message}")
-                    .asRuntimeException()
-            )
+            responseObserver.onError(INTERNAL.withDescription(e.message).asRuntimeException())
         }
     }
 }
