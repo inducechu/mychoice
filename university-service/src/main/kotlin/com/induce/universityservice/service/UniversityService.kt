@@ -10,6 +10,7 @@ import com.induce.universityservice.repository.FacultyRepository
 import com.induce.universityservice.repository.UniversityRepository
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
 
 @Service
@@ -90,5 +91,21 @@ class UniversityService(
             totalElements = result.totalElements,
             totalPages = result.totalPages
         )
+    }
+
+    @Transactional(readOnly = true)
+    fun getTopUniversities(limit: Int): List<UniversityResponse> {
+        val pageable = PageRequest.of(0, limit)
+
+        return universityRepository.findAllByOrderByRatingDesc(pageable).map {
+            UniversityResponse(
+                id = it.id!!,
+                code = it.code,
+                name = it.name,
+                city = it.city,
+                description = it.description,
+                rating = it.rating
+            )
+        }
     }
 }
