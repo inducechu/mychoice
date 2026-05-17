@@ -2,5 +2,5 @@ spring:
   grpc:
     client:
       default-channel:
-        address: "static://localhost:9092"
+        address: "static://user-service:9092"
         negotiation-type: plaintext

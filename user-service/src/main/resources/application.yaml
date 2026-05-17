@@ -11,7 +11,7 @@ spring:
       - "optional:classpath:spring-doc.yaml"
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/mychoice_user
+    url: jdbc:postgresql://postgres:5432/mychoice_user
     username: postgres
     password: 1234
     driver-class-name: org.postgresql.Driver
@@ -23,6 +23,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
 
   grpc:
     server:
