@@ -2,5 +2,5 @@ spring:
   grpc:
     client:
       default-channel:
-        address: "static://review-service:9091"
+        address: "eureka:///review-service"
         negotiation-type: plaintext

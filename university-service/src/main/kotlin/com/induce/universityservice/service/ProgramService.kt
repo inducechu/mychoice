@@ -1,9 +1,11 @@
 package com.induce.universityservice.service
 
+import com.induce.universityservice.dto.CreateDirectionRequest
 import com.induce.universityservice.dto.CreateProgramRequest
 import com.induce.universityservice.dto.DirectionResponse
 import com.induce.universityservice.dto.FacultyShortResponse
 import com.induce.universityservice.dto.ProgramResponse
+import com.induce.universityservice.model.Direction
 import com.induce.universityservice.model.Program
 import com.induce.universityservice.repository.DirectionRepository
 import com.induce.universityservice.repository.FacultyRepository
@@ -77,6 +79,25 @@ class ProgramService(
                 saved.faculty.name,
                 saved.faculty.rating
             )
+        )
+    }
+
+    @org.springframework.transaction.annotation.Transactional
+    fun createDirection(request: CreateDirectionRequest): DirectionResponse {
+        if (directionRepository.findByCode(request.code) != null) {
+            throw RuntimeException("Direction with code ${request.code} already exists")
+        }
+
+        val direction = Direction(
+            code = request.code,
+            name = request.name
+        )
+
+        val saved = directionRepository.save(direction)
+
+        return DirectionResponse(
+            code = saved.code,
+            name = saved.name
         )
     }
 }
