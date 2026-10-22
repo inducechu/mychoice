@@ -1,13 +1,29 @@
-version: '3.8'
+x-service: &service
+  networks:
+    - mychoice-net
+  mem_limit: 512m
+  restart: unless-stopped
+
+x-db-service: &db-service
+  <<: *service
+  depends_on:
+    postgres:
+      condition: service_healthy
+    eureka-server:
+      condition: service_healthy
+
+x-common-env: &common-env
+  SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+  SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+  EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
 
 services:
-  # База данных PostgreSQL
   postgres:
     image: postgres:15
     container_name: mychoice-db
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=1234
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - ./init-db:/docker-entrypoint-initdb.d
       - postgres-data:/var/lib/postgresql/data
@@ -16,13 +32,13 @@ services:
     networks:
       - mychoice-net
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
       interval: 5s
       timeout: 5s
       retries: 5
 
-  # Регистратор сервисов (Eureka)
   eureka-server:
+    <<: *service
     build:
       context: .
       args:
@@ -30,11 +46,15 @@ services:
     container_name: eureka-server
     ports:
       - "8761:8761"
-    networks:
-      - mychoice-net
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:8761/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
 
-  # Шлюз (Gateway)
   gateway-service:
+    <<: *service
     build:
       context: .
       args:
@@ -43,88 +63,54 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - eureka-server
+      eureka-server:
+        condition: service_healthy
     environment:
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
-    networks:
-      - mychoice-net
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
 
-  # Микросервисы
   auth-service:
+    <<: *db-service
     build:
       context: .
       args:
         MODULE_NAME: auth-service
     container_name: auth-service
-    depends_on:
-      postgres:
-        condition: service_healthy
-      eureka-server:
-        condition: service_started
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/mychoice_auth
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=1234
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
-    networks:
-      - mychoice-net
+      <<: *common-env
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/mychoice_auth
 
   user-service:
+    <<: *db-service
     build:
       context: .
       args:
         MODULE_NAME: user-service
     container_name: user-service
-    depends_on:
-      postgres:
-        condition: service_healthy
-      eureka-server:
-        condition: service_started
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/mychoice_user
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=1234
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
-    networks:
-      - mychoice-net
+      <<: *common-env
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/mychoice_user
 
   university-service:
+    <<: *db-service
     build:
       context: .
       args:
         MODULE_NAME: university-service
     container_name: university-service
-    depends_on:
-      postgres:
-        condition: service_healthy
-      eureka-server:
-        condition: service_started
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/mychoice_university
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=1234
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
-    networks:
-      - mychoice-net
+      <<: *common-env
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/mychoice_university
 
   review-service:
+    <<: *db-service
     build:
       context: .
       args:
         MODULE_NAME: review-service
     container_name: review-service
-    depends_on:
-      postgres:
-        condition: service_healthy
-      eureka-server:
-        condition: service_started
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/mychoice_review
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=1234
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
-    networks:
-      - mychoice-net
+      <<: *common-env
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/mychoice_review
 
 networks:
   mychoice-net:
