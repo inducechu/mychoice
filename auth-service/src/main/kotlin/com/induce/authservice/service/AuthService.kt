@@ -5,9 +5,9 @@ import com.induce.authservice.dto.RegisterRequest
 import com.induce.authservice.exception.InvalidCredentialsException
 import com.induce.authservice.exception.UserAlreadyExistsException
 import com.induce.authservice.exception.UserNotFoundException
-import com.induce.authservice.model.Role
 import com.induce.authservice.model.User
 import com.induce.authservice.repository.UserRepository
+import com.induce.common.model.Role
 import jakarta.transaction.Transactional
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service

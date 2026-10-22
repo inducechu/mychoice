@@ -1,6 +1,6 @@
 package com.induce.userservice.grpc
 
-import com.induce.userservice.model.Role
+import com.induce.common.model.Role
 import com.induce.userservice.model.UserProfile
 import com.induce.userservice.repository.UserProfileRepository
 import com.induce.userservice.util.UsernameGenerator

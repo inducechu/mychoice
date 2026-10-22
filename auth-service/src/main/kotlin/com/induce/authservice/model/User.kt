@@ -1,5 +1,6 @@
 package com.induce.authservice.model
 
+import com.induce.common.model.Role
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType

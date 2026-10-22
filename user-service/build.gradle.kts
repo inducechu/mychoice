@@ -17,6 +17,7 @@ java {
 
 dependencies {
     implementation(project(":common-proto"))
+    implementation(project(":common"))
 
     // Starters
     implementation(libs.spring.boot.starter.data.jpa)

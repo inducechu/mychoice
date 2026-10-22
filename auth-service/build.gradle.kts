@@ -24,6 +24,7 @@ configurations {
 
 dependencies {
     implementation(project(":common-proto"))
+    implementation(project(":common"))
 
     // Spring Boot Starters
     implementation(libs.spring.boot.starter.webmvc)
