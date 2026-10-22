@@ -1,7 +1,9 @@
 package com.induce.universityservice.dto
 
 import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Pattern
+import jakarta.validation.constraints.Positive
 import jakarta.validation.constraints.Size
 
 data class CreateUniversityRequest(
@@ -18,9 +20,9 @@ data class CreateUniversityRequest(
     @field:Size(max = 255, message = "University name must be <= 255 characters")
     val name: String,
 
-    @field:NotBlank(message = "City must not be blank")
-    @field:Size(max = 100, message = "City must be <= 100 characters")
-    val city: String,
+    @field:NotNull(message = "City id must not be null")
+    @field:Positive(message = "City id must be positive")
+    val cityId: Long?,
 
     @field:Size(max = 2000, message = "Description must be <= 2000 characters")
     val description: String?

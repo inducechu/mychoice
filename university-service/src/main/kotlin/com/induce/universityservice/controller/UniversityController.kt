@@ -91,16 +91,4 @@ class UniversityController(
     ): PageResponse<UniversityResponse> {
         return universityService.getAllUniversities(page, size)
     }
-
-    @GetMapping("/top")
-    @Operation(
-        summary = "Получить топ университетов",
-        description = "Возвращает список лучших университетов, отсортированных по убыванию рейтинга"
-    )
-    fun getTopUniversities(
-        @Parameter(description = "Количество университетов в топе", example = "30")
-        @RequestParam(defaultValue = "30") limit: Int
-    ): List<UniversityResponse> {
-        return universityService.getTopUniversities(limit)
-    }
 }

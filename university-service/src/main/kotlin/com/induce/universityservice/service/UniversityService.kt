@@ -5,81 +5,56 @@ import com.induce.universityservice.dto.FacultyShortResponse
 import com.induce.universityservice.dto.PageResponse
 import com.induce.universityservice.dto.UniversityResponse
 import com.induce.universityservice.exception.EntityAlreadyExistsException
+import com.induce.universityservice.mapper.toResponse
 import com.induce.universityservice.model.University
+import com.induce.universityservice.repository.CityRepository
 import com.induce.universityservice.repository.FacultyRepository
 import com.induce.universityservice.repository.UniversityRepository
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
+@Transactional(readOnly = true)
 class UniversityService(
     private val universityRepository: UniversityRepository,
-    private val facultyRepository: FacultyRepository
+    private val facultyRepository: FacultyRepository,
+    private val cityRepository: CityRepository
 ) {
 
-    fun getUniversity(id: Long): UniversityResponse {
-        val entity = universityRepository.findById(id)
-            .orElseThrow { RuntimeException("University not found") }
+    fun getUniversity(id: Long): UniversityResponse =
+        (universityRepository.findWithCityById(id)
+            ?: throw NoSuchElementException("University $id not found"))
+            .toResponse()
 
-        return UniversityResponse(
-            id = entity.id!!,
-            code = entity.code,
-            name = entity.name,
-            city = entity.city,
-            description = entity.description,
-        )
-    }
+    fun getFaculties(universityId: Long): List<FacultyShortResponse> =
+        facultyRepository.findByUniversityId(universityId)
+            .map { FacultyShortResponse(id = it.id!!, name = it.name) }
 
-    fun getFaculties(universityId: Long): List<FacultyShortResponse> {
-        val faculties = facultyRepository.findByUniversityId(universityId)
-
-        return faculties.map {
-            FacultyShortResponse(
-                id = it.id!!,
-                name = it.name,
-            )
-        }
-    }
-
+    @Transactional
     fun createUniversity(request: CreateUniversityRequest): UniversityResponse {
-
         if (universityRepository.findByCode(request.code) != null) {
             throw EntityAlreadyExistsException("University with code ${request.code} already exists")
         }
+        val cityId = requireNotNull(request.cityId)
+        val city = cityRepository.findById(cityId)
+            .orElseThrow { NoSuchElementException("City $cityId not found") }
 
         val university = University(
             code = request.code,
             name = request.name,
-            city = request.city,
+            city = city,
             description = request.description
         )
-
-        val saved = universityRepository.save(university)
-
-        return UniversityResponse(
-            id = saved.id!!,
-            code = saved.code,
-            name = saved.name,
-            city = saved.city,
-            description = saved.description,
-        )
+        return universityRepository.save(university).toResponse()
     }
 
     fun getAllUniversities(page: Int, size: Int): PageResponse<UniversityResponse> {
-        val pageable = PageRequest.of(page, size)
+        val pageable = PageRequest.of(page, size, Sort.by("name", "id"))
         val result = universityRepository.findAll(pageable)
-
         return PageResponse(
-            content = result.content.map {
-                UniversityResponse(
-                    id = it.id!!,
-                    code = it.code,
-                    name = it.name,
-                    city = it.city,
-                    description = it.description,
-                )
-            },
+            content = result.content.map { it.toResponse() },
             page = result.number,
             size = result.size,
             totalElements = result.totalElements,
@@ -87,18 +62,4 @@ class UniversityService(
         )
     }
 
-    @Transactional(readOnly = true)
-    fun getTopUniversities(limit: Int): List<UniversityResponse> {
-        val pageable = PageRequest.of(0, limit)
-
-        return universityRepository.findAllByOrderByNameAsc(pageable).map {
-            UniversityResponse(
-                id = it.id!!,
-                code = it.code,
-                name = it.name,
-                city = it.city,
-                description = it.description,
-            )
-        }
-    }
 }

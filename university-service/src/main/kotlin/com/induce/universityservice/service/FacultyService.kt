@@ -10,8 +10,10 @@ import com.induce.universityservice.repository.FacultyRepository
 import com.induce.universityservice.repository.ProgramRepository
 import com.induce.universityservice.repository.UniversityRepository
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
+@Transactional(readOnly = true)
 class FacultyService(
     private val facultyRepository: FacultyRepository,
     private val programRepository: ProgramRepository,
@@ -19,8 +21,8 @@ class FacultyService(
 ) {
 
     fun getFaculty(id: Long): FacultyResponse {
-        val faculty = facultyRepository.findById(id)
-            .orElseThrow { RuntimeException("Faculty not found") }
+        val faculty = facultyRepository.findWithUniversityById(id)
+            ?: throw RuntimeException("Faculty not found")
 
         return FacultyResponse(
             id = faculty.id!!,
@@ -50,6 +52,7 @@ class FacultyService(
         }
     }
 
+    @Transactional
     fun createFaculty(
         universityId: Long,
         request: CreateFacultyRequest

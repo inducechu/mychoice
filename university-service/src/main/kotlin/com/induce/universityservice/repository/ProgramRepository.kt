@@ -13,6 +13,6 @@ interface ProgramRepository : JpaRepository<Program, Long> {
     """)
     fun findWithDirectionByFacultyId(facultyId: Long): List<Program>
 
-    @Query("SELECT p FROM Program p JOIN FETCH p.direction WHERE p.id = :id")
+    @Query("SELECT p FROM Program p JOIN FETCH p.direction JOIN FETCH p.faculty WHERE p.id = :id")
     fun findDetailedById(id: Long): Program?
 }

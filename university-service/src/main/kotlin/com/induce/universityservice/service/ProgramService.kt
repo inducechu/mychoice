@@ -11,8 +11,10 @@ import com.induce.universityservice.repository.DirectionRepository
 import com.induce.universityservice.repository.FacultyRepository
 import com.induce.universityservice.repository.ProgramRepository
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
+@Transactional(readOnly = true)
 class ProgramService(
     private val programRepository: ProgramRepository,
     private val facultyRepository: FacultyRepository,
@@ -39,6 +41,7 @@ class ProgramService(
         )
     }
 
+    @Transactional
     fun createProgram(
         facultyId: Long,
         request: CreateProgramRequest
