@@ -28,7 +28,6 @@ class ProgramService(
             id = program.id!!,
             name = program.name,
             description = program.description,
-            rating = program.rating,
             degree = program.degree,
             direction = DirectionResponse(
                 code = program.direction.code,
@@ -37,7 +36,6 @@ class ProgramService(
             faculty = FacultyShortResponse(
                 program.faculty.id!!,
                 program.faculty.name,
-                program.faculty.rating
             )
         )
     }
@@ -57,7 +55,6 @@ class ProgramService(
             direction = direction,
             name = request.name,
             description = request.description,
-            rating = BigDecimal.ZERO,
             degree = request.degree,
             faculty = faculty
         )
@@ -68,7 +65,6 @@ class ProgramService(
             id = saved.id!!,
             name = saved.name,
             description = saved.description,
-            rating = saved.rating,
             degree = saved.degree,
             direction = DirectionResponse(
                 code = saved.direction.code,
@@ -77,7 +73,6 @@ class ProgramService(
             faculty = FacultyShortResponse(
                 saved.faculty.id!!,
                 saved.faculty.name,
-                saved.faculty.rating
             )
         )
     }

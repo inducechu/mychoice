@@ -29,7 +29,6 @@ class UniversityService(
             name = entity.name,
             city = entity.city,
             description = entity.description,
-            rating = entity.rating
         )
     }
 
@@ -40,7 +39,6 @@ class UniversityService(
             FacultyShortResponse(
                 id = it.id!!,
                 name = it.name,
-                rating = it.rating
             )
         }
     }
@@ -55,8 +53,7 @@ class UniversityService(
             code = request.code,
             name = request.name,
             city = request.city,
-            description = request.description,
-            rating = BigDecimal.ZERO
+            description = request.description
         )
 
         val saved = universityRepository.save(university)
@@ -67,7 +64,6 @@ class UniversityService(
             name = saved.name,
             city = saved.city,
             description = saved.description,
-            rating = saved.rating
         )
     }
 
@@ -83,7 +79,6 @@ class UniversityService(
                     name = it.name,
                     city = it.city,
                     description = it.description,
-                    rating = it.rating
                 )
             },
             page = result.number,
@@ -97,14 +92,13 @@ class UniversityService(
     fun getTopUniversities(limit: Int): List<UniversityResponse> {
         val pageable = PageRequest.of(0, limit)
 
-        return universityRepository.findAllByOrderByRatingDesc(pageable).map {
+        return universityRepository.findAllByOrderByNameAsc(pageable).map {
             UniversityResponse(
                 id = it.id!!,
                 code = it.code,
                 name = it.name,
                 city = it.city,
                 description = it.description,
-                rating = it.rating
             )
         }
     }

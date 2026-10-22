@@ -10,7 +10,6 @@ import com.induce.universityservice.repository.FacultyRepository
 import com.induce.universityservice.repository.ProgramRepository
 import com.induce.universityservice.repository.UniversityRepository
 import org.springframework.stereotype.Service
-import java.math.BigDecimal
 
 @Service
 class FacultyService(
@@ -27,7 +26,6 @@ class FacultyService(
             id = faculty.id!!,
             name = faculty.name,
             description = faculty.description,
-            rating = faculty.rating,
             university = UniversityShortResponse(
                 id = faculty.university.id!!,
                 name = faculty.university.name,
@@ -43,7 +41,6 @@ class FacultyService(
             ProgramShortResponse(
                 id = it.id!!,
                 name = it.name,
-                rating = it.rating,
                 degree = it.degree,
                 direction = DirectionResponse(
                     code = it.direction.code,
@@ -64,7 +61,6 @@ class FacultyService(
         val faculty = Faculty(
             name = request.name,
             description = request.description,
-            rating = BigDecimal.ZERO,
             university = university
         )
 
@@ -74,7 +70,6 @@ class FacultyService(
             id = saved.id!!,
             name = saved.name,
             description = saved.description,
-            rating = saved.rating,
             university = UniversityShortResponse(
                 id = saved.university.id!!,
                 name = saved.university.name,

@@ -16,9 +16,6 @@ import java.math.BigDecimal
 @Entity
 @Table(
     name = "universities",
-    indexes = [
-        Index(name = "idx_universities_rating_desc", columnList = "rating DESC")
-    ]
 )
 class University(
 
@@ -37,11 +34,6 @@ class University(
 
     @Column(length = 2000)
     var description: String? = null,
-
-    @Column(nullable = false, precision = 3, scale = 1)
-    @field:DecimalMin("0.0")
-    @field:DecimalMax("10.0")
-    var rating: BigDecimal,
 
     @OneToMany(mappedBy = "university", cascade = [CascadeType.ALL], orphanRemoval = true)
     val faculties: MutableList<Faculty> = mutableListOf()

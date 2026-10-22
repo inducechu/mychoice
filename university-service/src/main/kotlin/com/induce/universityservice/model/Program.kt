@@ -39,11 +39,6 @@ class Program(
     @Column(length = 2000)
     var description: String? = null,
 
-    @Column(nullable = false, precision = 3, scale = 1)
-    @field:DecimalMin("0.0")
-    @field:DecimalMax("10.0")
-    var rating: BigDecimal,
-
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     var degree: Degree,

@@ -35,11 +35,6 @@ class Faculty(
     @Column(length = 2000)
     var description: String? = null,
 
-    @Column(nullable = false, precision = 3, scale = 1)
-    @field:DecimalMin("0.0")
-    @field:DecimalMax("10.0")
-    var rating: BigDecimal,
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "university_id", nullable = false)
     var university: University,
