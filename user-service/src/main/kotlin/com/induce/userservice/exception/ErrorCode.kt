@@ -5,5 +5,8 @@ import org.springframework.http.HttpStatus
 enum class ErrorCode(val status: HttpStatus) {
     USER_NOT_FOUND(HttpStatus.NOT_FOUND),
     BAD_REQUEST(HttpStatus.BAD_REQUEST),
-    INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR)
+    INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR),
+    AFFILIATION_NOT_FOUND(HttpStatus.NOT_FOUND),
+    CONFLICT(HttpStatus.CONFLICT),
+    SERVICE_UNAVAILABLE(HttpStatus.SERVICE_UNAVAILABLE)
 }

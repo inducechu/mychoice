@@ -25,6 +25,8 @@ dependencies {
     implementation(libs.spring.boot.starter.webmvc)
     implementation(libs.spring.cloud.starter.netflix.eureka.client)
     implementation(libs.spring.grpc.server.starter)
+    implementation(libs.spring.boot.starter.kafka)
+    implementation(libs.spring.grpc.client.starter)
 
     // gRPC
     implementation(libs.grpc.services)

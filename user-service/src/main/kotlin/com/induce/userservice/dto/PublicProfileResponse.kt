@@ -4,5 +4,5 @@ data class PublicProfileResponse(
     val username: String,
     val firstName: String,
     val lastName: String,
-    val city: String
+    val affiliations: List<AffiliationResponse>
 )

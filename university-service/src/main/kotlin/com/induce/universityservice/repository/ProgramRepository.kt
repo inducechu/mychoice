@@ -15,4 +15,6 @@ interface ProgramRepository : JpaRepository<Program, Long> {
 
     @Query("SELECT p FROM Program p JOIN FETCH p.direction JOIN FETCH p.faculty WHERE p.id = :id")
     fun findDetailedById(id: Long): Program?
+
+    fun existsByIdAndFacultyId(id: Long, facultyId: Long): Boolean
 }

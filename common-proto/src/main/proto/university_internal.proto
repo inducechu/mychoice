@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package mychoice.university;
+
+option java_package = "com.induce.universityservice.grpc";
+option java_multiple_files = true;
+
+service UniversityInternalService {
+  rpc ValidateAffiliation(ValidateAffiliationRequest) returns (ValidateAffiliationResponse);
+}
+
+message ValidateAffiliationRequest {
+  int64 university_id = 1;
+  optional int64 faculty_id = 2;
+  optional int64 program_id = 3;
+}
+
+enum AffiliationCheckResult {
+  AFFILIATION_CHECK_RESULT_UNSPECIFIED = 0;
+  OK = 1;
+  UNIVERSITY_NOT_FOUND = 2;
+  FACULTY_NOT_FOUND = 3;
+  FACULTY_NOT_IN_UNIVERSITY = 4;
+  PROGRAM_NOT_FOUND = 5;
+  PROGRAM_NOT_IN_FACULTY = 6;
+}
+
+message ValidateAffiliationResponse {
+  AffiliationCheckResult result = 1;
+}

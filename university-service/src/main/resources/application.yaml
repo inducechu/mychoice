@@ -6,7 +6,6 @@ spring:
   config:
     import:
       - "optional:classpath:spring-doc.yaml"
-      - "optional:classpath:grpc-client.yaml"
       - "optional:classpath:eureka-client.yaml"
   datasource:
     url: jdbc:postgresql://postgres:5432/mychoice_university
@@ -22,3 +21,6 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
     baseline-version: 1
+  grpc:
+    server:
+      port: 9093

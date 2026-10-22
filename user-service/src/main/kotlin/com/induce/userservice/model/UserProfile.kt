@@ -1,6 +1,7 @@
 package com.induce.userservice.model
 
 import com.induce.common.model.Role
+import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
@@ -8,6 +9,7 @@ import jakarta.persistence.Enumerated
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import java.util.UUID
 
@@ -34,5 +36,7 @@ class UserProfile(
     var firstName: String,
     var lastName: String,
     var age: Int,
-    var city: String
+
+    @OneToMany(mappedBy = "userProfile", cascade = [CascadeType.ALL], orphanRemoval = true)
+    val affiliations: MutableList<Affiliation> = mutableListOf()
 )

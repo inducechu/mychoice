@@ -10,3 +10,12 @@ class UserNotFoundException(message: String) :
 
 class BadRequestException(message: String) :
     BaseException(ErrorCode.BAD_REQUEST, message)
+
+class AffiliationNotFoundException(id: Long) :
+    BaseException(ErrorCode.AFFILIATION_NOT_FOUND, "Affiliation $id not found")
+
+class ConflictException(message: String) :
+    BaseException(ErrorCode.CONFLICT, message)
+
+class ServiceUnavailableException(message: String) :
+    BaseException(ErrorCode.SERVICE_UNAVAILABLE, message)

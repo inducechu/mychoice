@@ -6,5 +6,5 @@ data class MyProfileResponse(
     val firstName: String,
     val lastName: String,
     val age: Int,
-    val city: String,
+    val affiliations: List<AffiliationResponse>
 )

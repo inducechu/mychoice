@@ -9,4 +9,6 @@ interface FacultyRepository : JpaRepository<Faculty, Long> {
 
     @EntityGraph(attributePaths = ["university"])
     fun findWithUniversityById(id: Long): Faculty?
+
+    fun existsByIdAndUniversityId(id: Long, universityId: Long): Boolean
 }

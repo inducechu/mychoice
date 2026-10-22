@@ -2,6 +2,8 @@ package com.induce.userservice.exception
 
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.ResponseEntity
+import org.springframework.http.converter.HttpMessageNotReadableException
+import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import java.time.LocalDateTime
@@ -47,5 +49,17 @@ class GlobalExceptionHandler {
         )
 
         return ResponseEntity(error, status)
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException::class, HttpMessageNotReadableException::class)
+    fun handleBadRequest(ex: Exception, request: HttpServletRequest): ResponseEntity<ErrorResponse> {
+        val message = (ex as? MethodArgumentNotValidException)
+            ?.bindingResult?.allErrors?.firstOrNull()?.defaultMessage
+            ?: "Malformed request body"
+        val status = ErrorCode.BAD_REQUEST.status
+        return ResponseEntity(
+            ErrorResponse(LocalDateTime.now(), status.value(), status.reasonPhrase, ErrorCode.BAD_REQUEST, message, request.requestURI),
+            status
+        )
     }
 }

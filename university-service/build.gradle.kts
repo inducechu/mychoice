@@ -29,6 +29,7 @@ dependencies {
     implementation(libs.spring.boot.starter.webmvc)
     implementation(libs.spring.boot.starter.validation)
     implementation(libs.spring.boot.starter.data.jpa)
+    implementation(libs.spring.grpc.server.starter)
     implementation(libs.spring.grpc.client.starter)
 
     // Discovery
