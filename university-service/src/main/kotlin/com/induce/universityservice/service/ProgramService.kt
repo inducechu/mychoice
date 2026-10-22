@@ -11,7 +11,6 @@ import com.induce.universityservice.repository.DirectionRepository
 import com.induce.universityservice.repository.FacultyRepository
 import com.induce.universityservice.repository.ProgramRepository
 import org.springframework.stereotype.Service
-import java.math.BigDecimal
 
 @Service
 class ProgramService(
