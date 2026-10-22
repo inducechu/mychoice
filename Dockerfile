@@ -7,8 +7,8 @@ WORKDIR /app
 COPY . .
 
 ARG MODULE_NAME
-# Кэш Gradle переживает пересборки, зависимости не качаются заново
-RUN --mount=type=cache,target=/home/gradle/.gradle \
+
+RUN --mount=type=cache,target=/home/gradle/.gradle/caches,sharing=locked \
     gradle :${MODULE_NAME}:bootJar -x test --no-daemon
 
 # Этап 2: Запуск
