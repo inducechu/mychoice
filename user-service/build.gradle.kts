@@ -37,6 +37,10 @@ dependencies {
     // Documentation
     implementation(libs.springdoc.openapi.webmvc)
 
+    // Flyway
+    implementation(libs.spring.boot.starter.flyway)
+    runtimeOnly(libs.flyway.postgresql)
+
     implementation(libs.jackson.module.kotlin)
     implementation(libs.kotlin.reflect)
 

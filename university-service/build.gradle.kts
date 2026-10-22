@@ -44,6 +44,10 @@ dependencies {
     // Database
     runtimeOnly(libs.postgresql)
 
+    // Flyway
+    implementation(libs.spring.boot.starter.flyway)
+    runtimeOnly(libs.flyway.postgresql)
+
     // Documentation
     implementation(libs.springdoc.openapi.webmvc)
 }
