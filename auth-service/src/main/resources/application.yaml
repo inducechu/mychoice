@@ -6,8 +6,8 @@ spring:
   config:
     import:
       - "optional:classpath:eureka-client.yaml"
-      - "optional:classpath:grpc-client.yaml"
       - "optional:classpath:spring-doc.yaml"
+      - "optional:classpath:kafka-producer.yaml"
   datasource:
     url: jdbc:postgresql://postgres:5432/mychoice_auth
     username: postgres
@@ -24,3 +24,8 @@ spring:
 jwt:
   secret: "9a4f4c35456584c35063138072105151241121112413151235346314151617181920"
   expiration: 86400000
+outbox:
+  publisher:
+    batch-size: 50
+    fixed-delay-ms: 1000
+    max-attempts: 10

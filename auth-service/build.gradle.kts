@@ -31,7 +31,6 @@ dependencies {
     implementation(libs.spring.boot.starter.security)
     implementation(libs.spring.boot.starter.validation)
     implementation(libs.spring.boot.starter.data.jpa)
-    implementation(libs.spring.grpc.client.starter)
 
     // Discovery
     implementation(libs.spring.cloud.starter.netflix.eureka.client)
@@ -39,9 +38,6 @@ dependencies {
     // Kotlin & JSON
     implementation(libs.kotlin.reflect)
     implementation(libs.jackson.module.kotlin)
-
-    // gRPC Client & Proto
-    implementation(libs.grpc.netty.shaded)
 
     // Database
     runtimeOnly(libs.postgresql)
@@ -55,13 +51,15 @@ dependencies {
     implementation(libs.spring.boot.starter.flyway)
     runtimeOnly(libs.flyway.postgresql)
 
+    // Kafka
+    implementation(libs.spring.boot.starter.kafka)
+
     // Documentation
     implementation(libs.springdoc.openapi.webmvc)
 
     // Testing
     testImplementation(libs.spring.boot.starter.test)
     testImplementation(libs.kotlin.test.junit5)
-    testImplementation("org.springframework.grpc:spring-grpc-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 

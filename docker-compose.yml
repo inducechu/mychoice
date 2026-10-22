@@ -12,6 +12,16 @@ x-db-service: &db-service
     eureka-server:
       condition: service_healthy
 
+x-kafka-db-service: &kafka-db-service
+  <<: *service
+  depends_on:
+    postgres:
+      condition: service_healthy
+    eureka-server:
+      condition: service_healthy
+    kafka:
+      condition: service_healthy
+
 x-common-env: &common-env
   SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
   SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
@@ -53,6 +63,34 @@ services:
       retries: 10
       start_period: 20s
 
+  kafka:
+    image: apache/kafka:4.1.0
+    container_name: kafka
+    restart: unless-stopped
+    ports:
+      - "9094:9094"   # для доступа с хоста
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:9094
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,EXTERNAL://localhost:9094
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:9092 > /dev/null 2>&1"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 20s
+    networks:
+      - mychoice-net
+
   gateway-service:
     <<: *service
     build:
@@ -69,7 +107,7 @@ services:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
 
   auth-service:
-    <<: *db-service
+    <<: *kafka-db-service
     build:
       context: .
       args:
@@ -80,7 +118,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/mychoice_auth
 
   user-service:
-    <<: *db-service
+    <<: *kafka-db-service
     build:
       context: .
       args:

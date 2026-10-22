@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package mychoice.events;
+
+option java_package = "com.induce.events";
+option java_multiple_files = true;
+
+import "google/protobuf/timestamp.proto";
+
+enum UserRole {
+  USER_ROLE_UNSPECIFIED = 0;
+  ABITURIENT = 1;
+  STUDENT = 2;
+  TEACHER = 3;
+  MODERATOR = 4;
+  ADMIN = 5;
+}
+
+message UserRegisteredEvent {
+  string event_id = 1;
+  string user_id = 2;
+  string email = 3;
+  UserRole role = 4;
+  string first_name = 5;
+  string last_name = 6;
+  int32 age = 7;
+  google.protobuf.Timestamp occurred_at = 8;
+}

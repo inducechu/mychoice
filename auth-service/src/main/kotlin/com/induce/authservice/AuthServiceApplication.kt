@@ -1,12 +1,11 @@
 package com.induce.authservice
 
-import com.induce.userservice.grpc.UserServiceGrpc
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
-import org.springframework.grpc.client.ImportGrpcClients
+import org.springframework.scheduling.annotation.EnableScheduling
 
 @SpringBootApplication
-@ImportGrpcClients(basePackageClasses = [UserServiceGrpc::class])
+@EnableScheduling
 class AuthServiceApplication
 
 fun main(args: Array<String>) {

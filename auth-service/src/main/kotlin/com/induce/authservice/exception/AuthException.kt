@@ -1,5 +1,6 @@
 package com.induce.authservice.exception
 
+import com.induce.common.model.Role
 import org.springframework.http.HttpStatus
 
 sealed class AuthException(
@@ -15,3 +16,6 @@ class InvalidCredentialsException :
 
 class UserNotFoundException(identifier: String) :
     AuthException("User '$identifier' not found", HttpStatus.NOT_FOUND)
+
+class RoleNotAllowedException(role: Role) :
+    AuthException("Role '$role' cannot be chosen during registration", HttpStatus.FORBIDDEN)

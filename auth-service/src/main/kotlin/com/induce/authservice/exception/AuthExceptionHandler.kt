@@ -3,6 +3,7 @@ package com.induce.authservice.exception
 import com.induce.authservice.dto.ErrorResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
@@ -35,5 +36,14 @@ class AuthExceptionHandler {
             status = HttpStatus.INTERNAL_SERVER_ERROR.value()
         )
         return ResponseEntity(error, HttpStatus.INTERNAL_SERVER_ERROR)
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException::class)
+    fun handleUnreadable(ex: HttpMessageNotReadableException): ResponseEntity<ErrorResponse> {
+        val error = ErrorResponse(
+            message = "Malformed request body",
+            status = HttpStatus.BAD_REQUEST.value()
+        )
+        return ResponseEntity(error, HttpStatus.BAD_REQUEST)
     }
 }

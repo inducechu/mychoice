@@ -1,6 +1,7 @@
 import com.google.protobuf.gradle.id
 
 plugins {
+    `java-library`
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.protobuf)
 }
@@ -9,13 +10,13 @@ group = "com.induce"
 version = "0.0.1-SNAPSHOT"
 
 dependencies {
-    implementation(platform(libs.spring.grpc.dependencies))
+    api(platform(libs.spring.grpc.dependencies))
+
+    api(libs.protobuf.java)
+    api(libs.grpc.protobuf)
+    api(libs.grpc.stub)
 
     implementation(libs.grpc.services)
-    implementation(libs.grpc.protobuf)
-    implementation(libs.grpc.stub)
-    implementation(libs.protobuf.java)
-
     implementation(libs.kotlin.reflect)
     implementation(libs.javax.annotation.api)
 }
