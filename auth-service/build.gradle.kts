@@ -50,6 +50,10 @@ dependencies {
     runtimeOnly(libs.jjwt.impl)
     runtimeOnly(libs.jjwt.jackson)
 
+    // Flyway
+    implementation(libs.spring.boot.starter.flyway)
+    runtimeOnly(libs.flyway.postgresql)
+
     // Documentation
     implementation(libs.springdoc.openapi.webmvc)
 

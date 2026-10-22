@@ -73,6 +73,10 @@ spring-boot-starter-test = { group = "org.springframework.boot", name = "spring-
 reactor-test = { group = "io.projectreactor", name = "reactor-test" }
 kotlin-test-junit5 = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit5" }
 
+#Flyway
+spring-boot-starter-flyway = { group = "org.springframework.boot", name = "spring-boot-starter-flyway" }
+flyway-postgresql = { group = "org.flywaydb", name = "flyway-database-postgresql" }
+
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
