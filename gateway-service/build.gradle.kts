@@ -17,6 +17,8 @@ java {
 }
 
 dependencies {
+    implementation(project(":common")) // enum Role
+
     implementation(libs.spring.boot.starter.webflux)
     implementation(libs.spring.cloud.starter.gateway.server.webflux)
     implementation(libs.spring.boot.starter.actuator)

@@ -29,5 +29,5 @@ class LoggingFilter : GlobalFilter, Ordered {
         })
     }
 
-    override fun getOrder(): Int = -1
+    override fun getOrder(): Int = -3
 }

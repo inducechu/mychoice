@@ -1,0 +1,42 @@
+app:
+  security:
+    # Путь без правила: AUTHENTICATED или DENY. Когда все ручки будут описаны, переключить на DENY
+    default-access: AUTHENTICATED
+    rules:
+      - path: /api/users/me/**
+
+      - path: /api/universities/**
+        methods: [GET]
+
+      - path: /api/universities/**
+        roles: [MODERATOR, ADMIN]
+
+      - path: /api/faculties/**
+        methods: [GET]
+
+      - path: /api/faculties/**
+        roles: [MODERATOR, ADMIN]
+
+      - path: /api/programs/**
+        methods: [GET]
+
+      - path: /api/programs/**
+        roles: [MODERATOR, ADMIN]
+
+      - path: /api/university/**
+        methods: [GET]
+
+      - path: /api/university/**
+        roles: [MODERATOR, ADMIN]
+
+      - path: /api/review/**
+        methods: [GET]
+
+      - path: /api/review/**
+        methods: [POST]
+        roles: [STUDENT, TEACHER]
+
+      - path: /api/review/**
+        methods: [PUT, PATCH, DELETE]
+
+        roles: [STUDENT, TEACHER, MODERATOR, ADMIN]

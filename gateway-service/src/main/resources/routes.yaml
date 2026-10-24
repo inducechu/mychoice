@@ -15,7 +15,7 @@ spring:
             allowCredentials: true # Разрешить передачу кук и Auth-заголовков
       discovery:
         locator:
-          enabled: true # Позволяет шлюзу создавать маршруты на основе имен в Eureka
+          enabled: false
       routes:
         - id: auth-service
           uri: lb://auth-service
