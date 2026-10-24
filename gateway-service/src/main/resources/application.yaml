@@ -18,4 +18,4 @@ management:
     gateway:
       enabled: true
 jwt:
-  secret: "9a4f4c35456584c35063138072105151241121112413151235346314151617181920"
+  secret: ${JWT_SECRET}

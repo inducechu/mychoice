@@ -105,6 +105,7 @@ services:
         condition: service_healthy
     environment:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      JWT_SECRET: ${JWT_SECRET}
 
   auth-service:
     <<: *kafka-db-service
@@ -116,6 +117,7 @@ services:
     environment:
       <<: *common-env
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/mychoice_auth
+      JWT_SECRET: ${JWT_SECRET}
 
   user-service:
     <<: *kafka-db-service
