@@ -29,6 +29,7 @@ spring-boot-starter-actuator = { group = "org.springframework.boot", name = "spr
 spring-grpc-server-starter = { group = "org.springframework.grpc", name = "spring-grpc-server-spring-boot-starter" }
 spring-grpc-client-starter = { group = "org.springframework.grpc", name = "spring-grpc-client-spring-boot-starter" }
 spring-boot-starter-kafka = { module = "org.springframework.boot:spring-boot-starter-kafka" }
+spring-boot-starter-data-redis-reactive = { group = "org.springframework.boot", name = "spring-boot-starter-data-redis-reactive"}
 
 # Gateway
 spring-cloud-starter-gateway-server-webflux = { group = "org.springframework.cloud", name = "spring-cloud-starter-gateway-server-webflux" }

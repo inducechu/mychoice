@@ -13,23 +13,52 @@ spring:
               - OPTIONS
             allowedHeaders: "*" # Разрешить любые заголовки (включая твой Authorization)
             allowCredentials: true # Разрешить передачу кук и Auth-заголовков
+            exposedHeaders: # чтобы фронт мог прочитать остаток лимита
+              - X-RateLimit-Remaining
+              - X-RateLimit-Burst-Capacity
+              - X-RateLimit-Replenish-Rate
+              - X-RateLimit-Requested-Tokens
       discovery:
         locator:
           enabled: false
       routes:
+        - id: auth-login
+          uri: lb://auth-service
+          predicates:
+            - Path=/api/auth/login
+          filters:
+            - name: RequestRateLimiter
+              args:
+                key-resolver: "#{@userOrIpKeyResolver}"
+                redis-rate-limiter.replenishRate: 1
+                redis-rate-limiter.burstCapacity: 60
+                redis-rate-limiter.requestedTokens: 12
         - id: auth-service
           uri: lb://auth-service
           predicates:
             - Path=/api/auth/**
+          filters:
+            - &default-rate-limit
+              name: RequestRateLimiter
+              args:
+                key-resolver: "#{@userOrIpKeyResolver}"
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
         - id: user-service
           uri: lb://user-service
           predicates:
             - Path=/api/users/**
+          filters:
+            - *default-rate-limit
         - id: university-service
           uri: lb://university-service
           predicates:
             - Path=/api/universities/**, /api/faculties/**, /api/programs/**, /api/university/**
+          filters:
+            - *default-rate-limit
         - id: review-service
           uri: lb://review-service
           predicates:
             - Path=/api/review/**
+          filters:
+            - *default-rate-limit
